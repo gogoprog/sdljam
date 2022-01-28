@@ -7,6 +7,7 @@
 
 struct Frame {
     SDL_Rect rect;
+    Vector2 pivot;
 };
 
 struct Atlas {
@@ -72,12 +73,15 @@ void Renderer::loadAtlas(const std::string &name) {
         return 0;
     };
 
-    enum Result { WRONG_UP, WRONG_DOWN, WRONG_LEFT, WRONG_RIGHT, VALID };
+    enum Result { WRONG_UP, WRONG_DOWN, WRONG_LEFT, WRONG_RIGHT, DEGENERATE, EMPTY, VALID };
 
     auto check_rect = [&](const SDL_Rect rect) {
+        if (rect.w <= 0 || rect.h <= 0)
+            return DEGENERATE;
+
         {
             int y = rect.y;
-            for (int x = 0; x < surface->w; ++x) {
+            for (int x = rect.x; x < rect.x + rect.w; ++x) {
                 auto v = pixels[y * pitch + x];
 
                 if (v < 254)
@@ -86,7 +90,7 @@ void Renderer::loadAtlas(const std::string &name) {
         }
         {
             int x = rect.x;
-            for (int y = 0; y < surface->h; ++y) {
+            for (int y = rect.y; y < rect.y + rect.h; ++y) {
                 auto v = pixels[y * pitch + x];
 
                 if (v < 254)
@@ -95,7 +99,7 @@ void Renderer::loadAtlas(const std::string &name) {
         }
         {
             int y = rect.y + rect.h;
-            for (int x = 0; x < surface->w; ++x) {
+            for (int x = rect.x; x < rect.x + rect.w; ++x) {
                 auto v = pixels[y * pitch + x];
 
                 if (v < 254)
@@ -104,7 +108,7 @@ void Renderer::loadAtlas(const std::string &name) {
         }
         {
             int x = rect.x + rect.w;
-            for (int y = 0; y < surface->h; ++y) {
+            for (int y = rect.y; y < rect.y + rect.h; ++y) {
                 auto v = pixels[y * pitch + x];
 
                 if (v < 254)
@@ -112,7 +116,16 @@ void Renderer::loadAtlas(const std::string &name) {
             }
         }
 
-        return VALID;
+        for (int y = rect.y; y < rect.y + rect.h; ++y) {
+            for (int x = rect.x; x < rect.x + rect.w; ++x) {
+                auto v = pixels[y * pitch + x];
+
+                if (v < 254)
+                    return VALID;
+            }
+        }
+
+        return EMPTY;
     };
 
     for (int y = 0; y < surface->h; ++y) {
@@ -130,7 +143,7 @@ void Renderer::loadAtlas(const std::string &name) {
                     continue;
                 }
 
-                while (result != VALID) {
+                while (result != VALID && result != DEGENERATE && result != EMPTY) {
                     switch (result) {
                         case WRONG_RIGHT:
                             rect.w = get_next_x(rect.x + rect.w, y) - rect.x;
@@ -145,7 +158,9 @@ void Renderer::loadAtlas(const std::string &name) {
                     result = check_rect(rect);
                 }
 
-                atlas.frames.push_back({rect});
+                if (result == VALID) {
+                    atlas.frames.push_back({rect});
+                }
             }
         }
     }
@@ -154,13 +169,38 @@ void Renderer::loadAtlas(const std::string &name) {
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
 }
 
-void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex) {
+void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot) {
     auto &atlas = pimpl->atlases[name];
-    auto rect = atlas.frames[frameindex].rect;
+    auto &frame = atlas.frames[frameindex];
+    auto rect = frame.rect;
     auto drect = rect;
     drect.x = pos.x;
     drect.y = pos.y;
+    if (use_pivot) {
+        drect.x -= frame.pivot.x;
+        drect.y -= frame.pivot.y;
+    }
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, atlas.texture, &rect, &drect);
+}
+
+void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {
+    auto &atlas = pimpl->atlases[name];
+    auto &frame = atlas.frames[frameindex];
+    frame.pivot = pivot;
+}
+
+int Renderer::getFramesCount(const std::string &name) const {
+    return pimpl->atlases[name].frames.size();
+}
+
+void Renderer::exportAtlas(const std::string &name) {
+    auto &atlas = pimpl->atlases[name];
+
+    for (int i = 0; i < atlas.frames.size(); ++i) {
+        auto &frame = atlas.frames[i];
+        std::cout << "renderer.setPivot(\"" << name << "\", " << i << ", {" << frame.pivot.x << "," << frame.pivot.y
+                  << "});" << std::endl;
+    }
 }

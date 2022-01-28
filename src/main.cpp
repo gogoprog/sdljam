@@ -8,6 +8,8 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
+void loadData(Renderer & renderer);
+
 int main(int arc, char **argv) {
     bool quit{false};
 
@@ -18,9 +20,30 @@ int main(int arc, char **argv) {
 
     renderer.init();
 
-    renderer.loadAtlas("Turret");
+    loadData(renderer);
 
-    int f = 0;
+    auto viewer = [&](const char *atlasname) {
+        static int frame = 0;
+        frame %= renderer.getFramesCount(atlasname);
+        renderer.draw({0, 0}, atlasname, frame, false);
+        renderer.draw({256, 256}, atlasname, frame);
+
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_LEFT)) {
+            frame--;
+            if (frame < 0)
+                frame = renderer.getFramesCount(atlasname) - 1;
+        }
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_RIGHT)) {
+            frame++;
+        }
+        if (inputs.isMouseJustPressed(1)) {
+            auto pos = inputs.getMousePosition();
+            renderer.setPivot(atlasname, frame, pos);
+        }
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_SPACE)) {
+            renderer.exportAtlas(atlasname);
+        }
+    };
 
     while (!quit) {
         SDL_Event event;
@@ -43,15 +66,11 @@ int main(int arc, char **argv) {
             }
         }
 
-        if (inputs.isJustPressed(SDL_SCANCODE_SPACE)) {
-            f++;
-            std::cout << f << std::endl;
-        }
-        renderer.draw({32, 32}, "Turret", f);
+        viewer("Turret");
 
         renderer.update();
 
-        if (inputs.isJustPressed(SDL_SCANCODE_ESCAPE)) {
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {
             quit = true;
         }
     }

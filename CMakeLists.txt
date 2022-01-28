@@ -8,6 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 add_executable(
     ${PROJECT_NAME}
     src/main.cpp
+    src/data.cpp
     src/renderer.cpp
     # src/inputs.cpp
     )

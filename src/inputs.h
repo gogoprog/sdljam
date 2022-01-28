@@ -26,7 +26,7 @@ class Inputs {
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP: {
                 auto &mevent = event.button;
-                currentKeyStates[mevent.button] = mevent.state;
+                currentMouseButtonStates[mevent.button] = mevent.state;
             } break;
             case SDL_MOUSEMOTION: {
                 auto &mevent = event.motion;
@@ -37,8 +37,12 @@ class Inputs {
         }
     }
 
-    bool isJustPressed(const int key) /*const*/ {
+    bool isKeyJustPressed(const int key) /*const*/ {
         return !previousKeyStates[key] && currentKeyStates[key];
+    }
+
+    bool isMouseJustPressed(const int button) /*const*/ {
+        return !previousMouseButtonStates[button] && currentMouseButtonStates[button];
     }
 
     const Vector2 &getMousePosition() const {
