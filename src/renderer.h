@@ -15,11 +15,17 @@ struct Tile {
         N,
         NE,
         W,
-        C,
+        FILL,
         E,
         SW,
         S,
         SE,
+        FILL1,
+        CORNER1,
+        CORNER2,
+        FILL2,
+        CORNER3,
+        CORNER4,
     };
 };
 
@@ -49,8 +55,8 @@ class Renderer {
     int getFramesCount(const std::string &name) const;
     void exportAtlas(const std::string &name);
 
-    Vector2 & getCameraPosition();
-    const Vector2 & getCameraPosition() const;
+    Vector2 &getCameraPosition();
+    const Vector2 &getCameraPosition() const;
 
   private:
     class Pimpl;

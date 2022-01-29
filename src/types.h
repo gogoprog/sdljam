@@ -34,3 +34,16 @@ inline Vector2 operator+(const Vector2 &v1, const Vector2 &v2) {
 inline Vector2 operator-(const Vector2 &v1, const Vector2 &v2) {
     return {v1.x - v2.x, v1.y - v2.y};
 }
+
+inline float clampAngle(const float input) {
+    float result = input;
+
+    while (result < 0) {
+        result += 360;
+    }
+    while (result > 360) {
+        result -= 360;
+    }
+
+    return result;
+}

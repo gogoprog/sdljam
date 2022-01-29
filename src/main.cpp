@@ -12,11 +12,11 @@ int main(int arc, char **argv) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    Context & context = Context::get();
-    auto & renderer = context.renderer;
-    auto & inputs = context.inputs;
-    auto & engine = context.engine;
-    auto & level = context.level;
+    Context &context = Context::get();
+    auto &renderer = context.renderer;
+    auto &inputs = context.inputs;
+    auto &engine = context.engine;
+    auto &level = context.level;
 
     renderer.init();
 
@@ -45,11 +45,14 @@ int main(int arc, char **argv) {
         }
     };
 
-  
     Game::init();
 
+    auto last_ticks = SDL_GetTicks();
     while (!quit) {
         SDL_Event event;
+        auto current_ticks = SDL_GetTicks();
+        auto delta_time = (current_ticks - last_ticks) / 1000.0f;
+        last_ticks = current_ticks;
 
         inputs.update();
         renderer.clear();
@@ -70,10 +73,9 @@ int main(int arc, char **argv) {
         }
 
 
-        /* viewer("Turret"); */
-
         level.render(renderer);
-        engine.update();
+        engine.update(delta_time);
+        /* viewer("Turret"); */
         renderer.update();
 
         if (inputs.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {

@@ -6,9 +6,11 @@
 struct Component {};
 
 class Engine;
+class System;
 
 class Entity {
     friend class Engine;
+    friend class System;
 
   public:
     String name;
@@ -20,9 +22,8 @@ class Entity {
         notifyAdd(T::name);
     }
 
-    template<typename T>
-    T & get() {
-        return components[T::name];
+    template <typename T> T &get() {
+        return (T &)*components[T::name];
     }
 
     void notifyAdd(const String component_name);
@@ -41,16 +42,21 @@ class System {
     ~System() = default;
 
     virtual void onEntityAdded(Entity &entity){};
-    virtual void updateSingle(Entity &entity) = 0;
+    virtual void updateSingle(const float dt, Entity &entity) = 0;
+    virtual void update(const float dt);
 
   protected:
     Vector<String> componentsNames;
+    Engine *engine{nullptr};
 };
 
 class Engine {
+    friend class System;
+
   public:
     void addSystem(System *system) {
         systems.push_back(system);
+        system->engine = this;
     };
 
     void addEntity(SharedPtr<Entity> entity) {
@@ -62,18 +68,9 @@ class Engine {
         }
     }
 
-    void update() {
+    void update(const float dt) {
         for (auto &system : systems) {
-            for (auto &entityptr : entities) {
-                auto &entity = *entityptr;
-                if (std::all_of(system->componentsNames.begin(), system->componentsNames.end(), [&](auto name) {
-                        auto it = std::find_if(entity.components.begin(), entity.components.end(),
-                                               [&](auto &kv) { return kv.first == name; });
-                        return it != entity.components.end();
-                    })) {
-                    system->updateSingle(entity);
-                }
-            }
+            system->update(dt);
         }
     }
 
@@ -98,10 +95,22 @@ class Engine {
     std::vector<SharedPtr<Entity>> entities;
 };
 
-void Entity::notifyAdd(const String component_name) {
+inline void Entity::notifyAdd(const String component_name) {
     if (engine) {
         engine->notifyAdd(*this, component_name);
     }
 }
 
-/* void Entity::notifyRemove(const String component_name); */
+inline void System::update(const float dt) {
+    auto entities = engine->entities;
+    for (auto &entityptr : entities) {
+        auto &entity = *entityptr;
+        if (std::all_of(componentsNames.begin(), componentsNames.end(), [&](auto name) {
+                auto it = std::find_if(entity.components.begin(), entity.components.end(),
+                                       [&](auto &kv) { return kv.first == name; });
+                return it != entity.components.end();
+            })) {
+            updateSingle(dt, entity);
+        }
+    }
+}

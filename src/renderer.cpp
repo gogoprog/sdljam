@@ -31,7 +31,7 @@ Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
 Renderer::~Renderer() = default;
 
 void Renderer::init() {
-    SDL_CreateWindowAndRenderer(800, 600, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
+    SDL_CreateWindowAndRenderer(1280, 800, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
     SDL_SetWindowTitle(pimpl->window, "hardvacuum-defense");
 }
 
