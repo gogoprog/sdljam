@@ -251,3 +251,11 @@ void Renderer::exportAtlas(const std::string &name) {
                   << "});" << std::endl;
     }
 }
+
+Vector2 &Renderer::getCameraPosition() {
+    return pimpl->cameraPosition;
+}
+
+const Vector2 &Renderer::getCameraPosition() const {
+    return pimpl->cameraPosition;
+}

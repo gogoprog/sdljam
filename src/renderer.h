@@ -49,6 +49,9 @@ class Renderer {
     int getFramesCount(const std::string &name) const;
     void exportAtlas(const std::string &name);
 
+    Vector2 & getCameraPosition();
+    const Vector2 & getCameraPosition() const;
+
   private:
     class Pimpl;
     std::unique_ptr<Pimpl> pimpl;

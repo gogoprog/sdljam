@@ -1,8 +1,9 @@
 #pragma once
 
+#include <cmath>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
 
 using String = std::string;
 template <typename T> using Vector = std::vector<T>;
@@ -14,6 +15,20 @@ class Vector2 {
     Vector2() = default;
     Vector2(int _x, int _y) : x(_x), y(_y) {
     }
+    Vector2(float _x, float _y) : x(_x), y(_y) {
+    }
     float x;
     float y;
+
+    float getLength() const {
+        return std::sqrt(x * x + y * y);
+    }
 };
+
+inline Vector2 operator+(const Vector2 &v1, const Vector2 &v2) {
+    return {v1.x + v2.x, v1.y + v2.y};
+}
+
+inline Vector2 operator-(const Vector2 &v1, const Vector2 &v2) {
+    return {v1.x - v2.x, v1.y - v2.y};
+}

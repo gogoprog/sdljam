@@ -12,6 +12,8 @@ class TurretSystem : public System {
     }
 
     void updateSingle(Entity &entity) override {
+        const auto cursor_position = Context::get().getMouseWorldPosition();
+
         Context::get().renderer.draw(entity.position, "Turret", 0);
         Context::get().renderer.draw(entity.position, "Turret", 10);
     }
@@ -19,6 +21,7 @@ class TurretSystem : public System {
 
 struct Turret : public Component {
     Turret() : Component("Turret"){};
+    float angle{0};
 };
 
 class Game {
