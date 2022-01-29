@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../context.h"
+#include "bullet.h"
 
 struct Turret : public Component {
     inline static String name = "Turret";
@@ -21,16 +22,24 @@ class TurretSystem : public System {
         const auto cursor_position = Context::get().getMouseWorldPosition();
         auto &turret = entity.get<Turret>();
 
-        if (Context::get().inputs.isMouseJustPressed(1)) {
+        if (turret.timeSinceLastFire > 0.25 && Context::get().inputs.isMousePressed(1)) {
             turret.timeSinceLastFire = 0;
+            auto e = std::make_shared<Entity>();
+            e->add<Bullet>();
+            auto speed = 1000;
+            auto angle = (turret.angle - 90) * std::numbers::pi / 180.0f;
+            e->get<Bullet>().velocity = Vector2(std::cos(angle) * speed, std::sin(angle) * speed);
+            e->position = entity.position;
+            Context::get().engine.addEntity(e);
         }
 
         turret.timeSinceLastFire += dt;
 
         {
             auto frame = 2;
-
-            turret.angle += dt * 100;
+            auto delta = cursor_position - entity.position;
+            turret.angle = (std::atan2(delta.y, delta.x) * 180.0f / std::numbers::pi) + 90;
+            /* turret.angle += dt * 100; */
             turret.angle = clampAngle(turret.angle);
 
             auto step = 45 / 2.0f;

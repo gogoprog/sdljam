@@ -21,6 +21,8 @@ void loadData(Renderer &renderer) {
     renderer.setPivot("Turret", 16, {58, 31});
     renderer.setPivot("Turret", 17, {53, 23});
 
+    renderer.loadAtlas("Bullets");
+
     renderer.loadTerrain("StoneSnow");
     renderer.loadTerrain("SnowPink");
 

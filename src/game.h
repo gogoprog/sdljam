@@ -10,6 +10,7 @@ class Game {
     static void init() {
         auto &engine = Context::get().engine;
         engine.addSystem(new TurretSystem());
+        engine.addSystem(new BulletSystem());
         engine.addSystem(new CameraSystem());
         engine.addSystem(new ControlSystem());
 

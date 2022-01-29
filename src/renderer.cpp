@@ -167,7 +167,7 @@ void Renderer::loadAtlas(const std::string &name) {
                 }
 
                 if (result == VALID) {
-                    atlas.frames.push_back({rect});
+                    atlas.frames.push_back({rect, {rect.w / 2, rect.h / 2}});
                 }
             }
         }

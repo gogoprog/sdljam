@@ -3,6 +3,7 @@
 #include <cmath>
 #include <map>
 #include <memory>
+#include <numbers>
 #include <string>
 #include <vector>
 
@@ -19,6 +20,8 @@ class Vector2 {
     }
     Vector2(float _x, float _y) : x(_x), y(_y) {
     }
+    Vector2(double _x, double _y) : x(_x), y(_y) {
+    }
     float x;
     float y;
 
@@ -33,6 +36,10 @@ inline Vector2 operator+(const Vector2 &v1, const Vector2 &v2) {
 
 inline Vector2 operator-(const Vector2 &v1, const Vector2 &v2) {
     return {v1.x - v2.x, v1.y - v2.y};
+}
+
+inline Vector2 operator*(const Vector2 &v1, const float v) {
+    return {v1.x * v, v1.y * v};
 }
 
 inline bool operator<(const Vector2 &v1, const Vector2 &v2) {
