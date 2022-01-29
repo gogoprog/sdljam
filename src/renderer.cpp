@@ -1,5 +1,6 @@
 #include "renderer.h"
-#include "maths.h"
+
+#include "types.h"
 #include <SDL.h>
 #include <iostream>
 #include <map>
@@ -11,7 +12,7 @@ struct Frame {
 };
 
 struct Atlas {
-    std::vector<Frame> frames;
+    Vector<Frame> frames;
     SDL_Surface *surface;
     SDL_Texture *texture;
 };
@@ -19,8 +20,9 @@ struct Atlas {
 struct Renderer::Pimpl {
     SDL_Window *window;
     SDL_Renderer *renderer;
-    std::map<std::string, Atlas> atlases;
-    std::map<std::string, Terrain> terrains;
+    std::map<String, Atlas> atlases;
+    std::map<String, Terrain> terrains;
+    Vector2 cameraPosition{0, 0};
 };
 
 Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
@@ -208,8 +210,8 @@ void Renderer::draw(const Vector2 &pos, const std::string &name, const int frame
     auto &frame = atlas.frames[frameindex];
     auto rect = frame.rect;
     auto drect = rect;
-    drect.x = pos.x;
-    drect.y = pos.y;
+    drect.x = pos.x - pimpl->cameraPosition.x;
+    drect.y = pos.y - pimpl->cameraPosition.y;
     if (use_pivot) {
         drect.x -= frame.pivot.x;
         drect.y -= frame.pivot.y;
@@ -223,8 +225,8 @@ void Renderer::draw(const Vector2 &pos, const Terrain &terrain, const int tilein
     auto &frame = terrain.tiles[tileindex];
     auto rect = frame.rect;
     auto drect = rect;
-    drect.x = pos.x;
-    drect.y = pos.y;
+    drect.x = pos.x - pimpl->cameraPosition.x;
+    drect.y = pos.y - pimpl->cameraPosition.y;
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, terrain.texture, &rect, &drect);

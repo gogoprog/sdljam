@@ -2,6 +2,7 @@
 #include <SDL_image.h>
 #include <iostream>
 
+#include "ecs.h"
 #include "inputs.h"
 #include "level.h"
 #include "renderer.h"
@@ -19,6 +20,7 @@ int main(int arc, char **argv) {
     Renderer renderer;
     Inputs inputs;
     Level level;
+    Engine engine;
 
     renderer.init();
 
@@ -46,6 +48,39 @@ int main(int arc, char **argv) {
             renderer.exportAtlas(atlasname);
         }
     };
+
+    {
+
+        class TestSystem : public System {
+          public:
+            TestSystem() {
+                componentsNames.push_back("Dummy");
+            }
+
+            void onEntityAdded(Entity &entity) override {
+                puts("entity addeD");
+            }
+
+            void updateSingle(Entity &entity) override {
+                puts("yep");
+            }
+        };
+
+        struct Dummy : public Component {
+            Dummy() : Component("Dummy"){};
+        };
+
+        engine.addSystem(new TestSystem());
+
+        auto e = std::make_shared<Entity>();
+
+        e->add<Dummy>();
+        engine.addEntity(e);
+
+
+
+        engine.update();
+    }
 
     while (!quit) {
         SDL_Event event;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "maths.h"
+#include "types.h"
 #include <SDL.h>
 #include <map>
 #include <memory>
