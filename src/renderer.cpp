@@ -48,8 +48,6 @@ void Renderer::loadAtlas(const std::string &name) {
     auto surface = SDL_LoadBMP(path.c_str());
     atlas.surface = surface;
 
-    atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
-
     auto pixels = (uint8_t *)surface->pixels;
     auto pitch = surface->pitch;
 
@@ -133,6 +131,7 @@ void Renderer::loadAtlas(const std::string &name) {
             auto v = pixels[y * pitch + x];
 
             if (v == 254) {
+                pixels[y * pitch + x] = 255;
                 SDL_Rect rect{x, y, x, y};
                 rect.w = get_next_x(x, y) - rect.x;
                 rect.h = get_next_y(x, y) - rect.y;
@@ -164,6 +163,9 @@ void Renderer::loadAtlas(const std::string &name) {
             }
         }
     }
+
+    SDL_SetColorKey(surface, true, 255);
+    atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
 
     pimpl->atlases[name] = atlas;
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
