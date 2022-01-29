@@ -78,9 +78,7 @@ class Engine {
     }
 
     void notifyAdd(Entity &entity, const String component_name) {
-
         for (auto &system : systems) {
-
             if (std::find(system->componentsNames.begin(), system->componentsNames.end(), component_name) !=
                 system->componentsNames.end()) {
 
