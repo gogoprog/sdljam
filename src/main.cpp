@@ -3,12 +3,13 @@
 #include <iostream>
 
 #include "inputs.h"
+#include "level.h"
 #include "renderer.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 
-void loadData(Renderer & renderer);
+void loadData(Renderer &renderer);
 
 int main(int arc, char **argv) {
     bool quit{false};
@@ -17,6 +18,7 @@ int main(int arc, char **argv) {
 
     Renderer renderer;
     Inputs inputs;
+    Level level;
 
     renderer.init();
 
@@ -65,6 +67,8 @@ int main(int arc, char **argv) {
                     break;
             }
         }
+
+        level.render(renderer);
 
         viewer("Turret");
 

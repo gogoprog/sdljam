@@ -10,6 +10,7 @@ add_executable(
     src/main.cpp
     src/data.cpp
     src/renderer.cpp
+    src/level.cpp
     # src/inputs.cpp
     )
 

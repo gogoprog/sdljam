@@ -20,6 +20,7 @@ struct Renderer::Pimpl {
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::map<std::string, Atlas> atlases;
+    std::map<std::string, Terrain> terrains;
 };
 
 Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
@@ -171,6 +172,37 @@ void Renderer::loadAtlas(const std::string &name) {
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
 }
 
+void Renderer::loadTerrain(const std::string &name) {
+
+    std::string path;
+    path = "res/" + name + ".bmp";
+
+    Terrain terrain;
+    auto surface = SDL_LoadBMP(path.c_str());
+    terrain.surface = surface;
+
+    for (int y = 0; y < 9; ++y) {
+        if (!(y & 1)) {
+
+            for (int x = 0; x < 5; ++x) {
+                if (!(x & 1)) {
+                    terrain.tiles.push_back({x * Tile::SIZE, 1 + y * Tile::SIZE, Tile::SIZE, Tile::SIZE});
+                }
+            }
+        }
+    }
+
+    SDL_SetColorKey(surface, true, 255);
+    terrain.texture = SDL_CreateTextureFromSurface(pimpl->renderer, terrain.surface);
+
+    pimpl->terrains[name] = terrain;
+    std::cout << "Loaded terrain '" << name << "'" << std::endl;
+}
+
+const Terrain &Renderer::getTerrain(const std::string &name) {
+    return pimpl->terrains[name];
+}
+
 void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot) {
     auto &atlas = pimpl->atlases[name];
     auto &frame = atlas.frames[frameindex];
@@ -185,6 +217,17 @@ void Renderer::draw(const Vector2 &pos, const std::string &name, const int frame
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, atlas.texture, &rect, &drect);
+}
+
+void Renderer::draw(const Vector2 &pos, const Terrain &terrain, const int tileindex) {
+    auto &frame = terrain.tiles[tileindex];
+    auto rect = frame.rect;
+    auto drect = rect;
+    drect.x = pos.x;
+    drect.y = pos.y;
+    drect.w *= 2;
+    drect.h *= 2;
+    SDL_RenderCopy(pimpl->renderer, terrain.texture, &rect, &drect);
 }
 
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {
