@@ -6,6 +6,7 @@
 #include "inputs.h"
 #include "level.h"
 #include "renderer.h"
+#include "context.h"
 
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
@@ -17,10 +18,11 @@ int main(int arc, char **argv) {
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    Renderer renderer;
-    Inputs inputs;
-    Level level;
-    Engine engine;
+    Context & context = Context::get();
+    auto & renderer = context.renderer;
+    auto & inputs = context.inputs;
+    auto & engine = context.engine;
+    auto & level = context.level;
 
     renderer.init();
 
@@ -107,6 +109,7 @@ int main(int arc, char **argv) {
 
         viewer("Turret");
 
+        engine.update();
         renderer.update();
 
         if (inputs.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {
