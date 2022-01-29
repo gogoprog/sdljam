@@ -2,14 +2,8 @@
 #include <SDL_image.h>
 #include <iostream>
 
-#include "ecs.h"
-#include "inputs.h"
-#include "level.h"
-#include "renderer.h"
 #include "context.h"
-
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+#include "game.h"
 
 void loadData(Renderer &renderer);
 
@@ -51,38 +45,8 @@ int main(int arc, char **argv) {
         }
     };
 
-    {
-
-        class TestSystem : public System {
-          public:
-            TestSystem() {
-                componentsNames.push_back("Dummy");
-            }
-
-            void onEntityAdded(Entity &entity) override {
-                puts("entity addeD");
-            }
-
-            void updateSingle(Entity &entity) override {
-                puts("yep");
-            }
-        };
-
-        struct Dummy : public Component {
-            Dummy() : Component("Dummy"){};
-        };
-
-        engine.addSystem(new TestSystem());
-
-        auto e = std::make_shared<Entity>();
-
-        e->add<Dummy>();
-        engine.addEntity(e);
-
-
-
-        engine.update();
-    }
+  
+    Game::init();
 
     while (!quit) {
         SDL_Event event;
@@ -105,10 +69,10 @@ int main(int arc, char **argv) {
             }
         }
 
+
+        /* viewer("Turret"); */
+
         level.render(renderer);
-
-        viewer("Turret");
-
         engine.update();
         renderer.update();
 
