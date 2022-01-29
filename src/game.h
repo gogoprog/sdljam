@@ -28,10 +28,11 @@ class Game {
             e->position = {128, 256};
             engine.addEntity(e);
         }
-        {
+
+        for (int i = 0; i < 10; ++i) {
             auto e = std::make_shared<Entity>();
             e->add<Turret>();
-            e->position = {512, 256};
+            e->position = {rand() % 1024, rand() % 1024};
             engine.addEntity(e);
         }
     }
