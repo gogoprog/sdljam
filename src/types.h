@@ -35,6 +35,12 @@ inline Vector2 operator-(const Vector2 &v1, const Vector2 &v2) {
     return {v1.x - v2.x, v1.y - v2.y};
 }
 
+inline bool operator<(const Vector2 &v1, const Vector2 &v2) {
+    if (v1.y == v2.y)
+        return v1.x < v2.x;
+    return v1.y < v2.y;
+}
+
 inline float clampAngle(const float input) {
     float result = input;
 
