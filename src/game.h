@@ -20,7 +20,7 @@ class TurretSystem : public System {
 };
 
 struct Turret : public Component {
-    Turret() : Component("Turret"){};
+    inline static String name = "Turret";
     float angle{0};
 };
 

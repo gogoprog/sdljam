@@ -2,13 +2,8 @@
 
 #include "types.h"
 #include <algorithm>
-#include <memory>
-#include <vector>
 
-struct Component {
-    Component(const String &_name) : name(_name){};
-    String name;
-};
+struct Component {};
 
 class Engine;
 
@@ -20,16 +15,21 @@ class Entity {
     Vector2 position;
 
     template <typename T> void add() {
-        components.push_back(std::make_unique<T>());
+        components[T::name] = std::make_unique<T>();
 
-        notifyAdd(components.back()->name);
+        notifyAdd(T::name);
+    }
+
+    template<typename T>
+    T & get() {
+        return components[T::name];
     }
 
     void notifyAdd(const String component_name);
     void notifyRemove(const String component_name);
 
   private:
-    Vector<UniquePtr<Component>> components;
+    Map<String, UniquePtr<Component>> components;
     Engine *engine{nullptr};
 };
 
@@ -57,8 +57,8 @@ class Engine {
         entities.push_back(entity);
         entity->engine = this;
 
-        for (auto &component : entity->components) {
-            notifyAdd(*entity, component->name);
+        for (auto &kv : entity->components) {
+            notifyAdd(*entity, kv.first);
         }
     }
 
@@ -68,7 +68,7 @@ class Engine {
                 auto &entity = *entityptr;
                 if (std::all_of(system->componentsNames.begin(), system->componentsNames.end(), [&](auto name) {
                         auto it = std::find_if(entity.components.begin(), entity.components.end(),
-                                               [&](auto &component) { return component->name == name; });
+                                               [&](auto &kv) { return kv.first == name; });
                         return it != entity.components.end();
                     })) {
                     system->updateSingle(entity);
@@ -84,7 +84,7 @@ class Engine {
 
                 if (std::all_of(system->componentsNames.begin(), system->componentsNames.end(), [&](auto name) {
                         auto it = std::find_if(entity.components.begin(), entity.components.end(),
-                                               [&](auto &component) { return component->name == name; });
+                                               [&](auto &kv) { return kv.first == name; });
                         return it != entity.components.end();
                     })) {
                     system->onEntityAdded(entity);
