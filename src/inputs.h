@@ -41,8 +41,16 @@ class Inputs {
         return !previousKeyStates[key] && currentKeyStates[key];
     }
 
+    bool isKeyPressed(const int key) /*const*/ {
+        return currentKeyStates[key];
+    }
+
     bool isMouseJustPressed(const int button) /*const*/ {
         return !previousMouseButtonStates[button] && currentMouseButtonStates[button];
+    }
+
+    bool isMousePressed(const int button) /*const*/ {
+        return currentMouseButtonStates[button];
     }
 
     const Vector2 &getMousePosition() const {

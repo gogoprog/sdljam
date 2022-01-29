@@ -17,11 +17,17 @@ struct Atlas {
     SDL_Texture *texture;
 };
 
+struct Texture {
+    SDL_Rect rect;
+    SDL_Texture *texture;
+};
+
 struct Renderer::Pimpl {
     SDL_Window *window;
     SDL_Renderer *renderer;
     std::map<String, Atlas> atlases;
     std::map<String, Terrain> terrains;
+    std::map<String, Texture> textures;
     Vector2 cameraPosition{0, 0};
 };
 
@@ -175,7 +181,6 @@ void Renderer::loadAtlas(const std::string &name) {
 }
 
 void Renderer::loadTerrain(const std::string &name) {
-
     std::string path;
     path = "res/" + name + ".bmp";
 
@@ -199,6 +204,16 @@ void Renderer::loadTerrain(const std::string &name) {
 
     pimpl->terrains[name] = terrain;
     std::cout << "Loaded terrain '" << name << "'" << std::endl;
+}
+
+void Renderer::loadTexture(const std::string &name) {
+    std::string path;
+    path = "res/" + name + ".bmp";
+    auto surface = SDL_LoadBMP(path.c_str());
+    Texture texture;
+    texture.texture = SDL_CreateTextureFromSurface(pimpl->renderer, surface);
+    texture.rect = {0, 0, surface->w, surface->h};
+    pimpl->textures[name] = texture;
 }
 
 const Terrain &Renderer::getTerrain(const std::string &name) {
@@ -230,6 +245,17 @@ void Renderer::draw(const Vector2 &pos, const Terrain &terrain, const int tilein
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, terrain.texture, &rect, &drect);
+}
+
+void Renderer::draw(const Vector2 &pos, const std::string &name) {
+    auto &texture = pimpl->textures[name];
+    auto rect = texture.rect;
+    auto drect = rect;
+    drect.x = pos.x;
+    drect.y = pos.y;
+    drect.w *= 2;
+    drect.h *= 2;
+    SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
 }
 
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {

@@ -72,10 +72,12 @@ int main(int arc, char **argv) {
             }
         }
 
-
         level.render(renderer);
         engine.update(delta_time);
         /* viewer("Turret"); */
+
+        renderer.draw({1280 - 160, 0}, "Panel");
+
         renderer.update();
 
         if (inputs.isKeyJustPressed(SDL_SCANCODE_ESCAPE)) {
