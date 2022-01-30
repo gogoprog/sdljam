@@ -31,6 +31,11 @@ class Vector2 {
     float getLength() const {
         return std::sqrt(x * x + y * y);
     }
+
+    Vector2 getNormalized() const {
+        auto len = getLength();
+        return {x / len, y / len};
+    }
 };
 
 inline Vector2 operator+(const Vector2 &v1, const Vector2 &v2) {

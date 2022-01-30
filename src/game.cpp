@@ -4,9 +4,19 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/factory.h"
+#include "game/mode.h"
 #include "game/sprite.h"
 #include "game/turret.h"
 #include "game/ui.h"
+
+struct Game::Pimpl {
+    FiringModeSystem firingModeSystem;
+};
+
+Game::Game() : pimpl(new Game::Pimpl()) {
+}
+
+Game::~Game() = default;
 
 void Game::init() {
     auto &engine = Context::get().engine;
@@ -18,6 +28,7 @@ void Game::init() {
     engine.addSystem(new SpriteRotaterSystem());
     engine.addSystem(new SpriteRendererSystem());
     engine.addSystem(new UiSystem());
+    engine.addSystem(new ModeControlSystem());
 
     {
         auto e = Factory::createCamera();
@@ -44,5 +55,22 @@ void Game::init() {
             e->position = pos;
             engine.addEntity(e);
         }
+    }
+
+    changeMode(Mode::FIRING);
+}
+
+void Game::changeMode(const Mode mode) {
+    auto &engine = Context::get().engine;
+
+    switch (mode) {
+        case Mode::FIRING:
+            engine.addSystem(&pimpl->firingModeSystem);
+            break;
+        case Mode::TURRET_BUILDING:
+            break;
+        case Mode::ROAD_BUILDING:
+
+            break;
     }
 }
