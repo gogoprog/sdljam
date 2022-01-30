@@ -75,6 +75,10 @@ class RoadBuildingModeSystem : public System {
             level.setRoad(tile_coords, true);
         }
 
+        if (Context::get().inputs.isMousePressed(3)) {
+            level.setRoad(tile_coords, false);
+        }
+
         auto &terrain = renderer.getTerrain("StoneSnow");
         renderer.draw(position, terrain, Tile::FILL1);
     }

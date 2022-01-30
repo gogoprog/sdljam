@@ -28,8 +28,17 @@ class Level {
 
     void setRoad(const Vector2 &coords, const bool value) {
         roadmap[coords] = value;
+        updateCache({coords.x - 1, coords.y - 1}, {coords.x + 1, coords.y + 1});
     }
+
+    bool getRoad(const Vector2 &coords) {
+        return roadmap[coords];
+    }
+
+    void buildCache();
+    void updateCache(const Vector2 &from, const Vector2 &to);
 
   private:
     Map<Vector2, bool> roadmap;
+    Vector<int> cachedTypes;
 };
