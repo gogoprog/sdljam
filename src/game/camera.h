@@ -14,9 +14,16 @@ class CameraSystem : public System {
 
     void updateSingle(const float dt, Entity &entity) override {
         Vector2 position = {int(entity.position.x), int(entity.position.y)};
+        auto &renderer = Context::get().renderer;
+        auto &level = Context::get().level;
 
-        position.x = std::clamp<int>(position.x, 0, Context::get().level.width - Context::get().renderer.width);
-        position.y = std::clamp<int>(position.y, 0, Context::get().level.height - Context::get().renderer.height);
+        if (renderer.width < level.width) {
+            position.x = std::clamp<int>(position.x, 0, level.width - renderer.width);
+        }
+
+        if (renderer.height < level.height) {
+            position.y = std::clamp<int>(position.y, 0, level.height - renderer.height);
+        }
 
         entity.position = position;
 

@@ -70,13 +70,16 @@ int main(int arc, char **argv) {
                 case SDL_QUIT:
                     quit = true;
                     break;
+                case SDL_WINDOWEVENT:
+                    renderer.onWindowEvent(event.window);
+                    break;
             }
         }
 
         level.render(renderer);
         engine.update(delta_time);
-        /* viewer("Turret"); */
 
+        /* viewer("Turret"); */
 
         renderer.update();
 

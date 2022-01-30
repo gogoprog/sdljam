@@ -60,6 +60,8 @@ class Renderer {
     Vector2 &getCameraPosition();
     const Vector2 &getCameraPosition() const;
 
+    void onWindowEvent(const SDL_WindowEvent &wevent);
+
     int width;
     int height;
 

@@ -298,3 +298,12 @@ Vector2 &Renderer::getCameraPosition() {
 const Vector2 &Renderer::getCameraPosition() const {
     return pimpl->cameraPosition;
 }
+
+void Renderer::onWindowEvent(const SDL_WindowEvent &wevent) {
+    switch (wevent.event) {
+        case SDL_WINDOWEVENT_RESIZED:
+            width = wevent.data1;
+            height = wevent.data2;
+            break;
+    }
+}
