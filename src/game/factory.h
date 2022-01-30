@@ -9,4 +9,5 @@ class Factory {
     static SharedPtr<Entity> createBase();
     static SharedPtr<Entity> createTurret();
     static SharedPtr<Entity> createBullet();
+    static SharedPtr<Entity> createVehicle();
 };

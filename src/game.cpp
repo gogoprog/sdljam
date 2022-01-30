@@ -8,6 +8,7 @@
 #include "game/sprite.h"
 #include "game/turret.h"
 #include "game/ui.h"
+#include "game/vehicle.h"
 
 struct Game::Pimpl {
     FiringModeSystem firingModeSystem;
@@ -23,7 +24,9 @@ void Game::init() {
     auto &engine = Context::get().engine;
 
     engine.addSystem(new TurretSystem());
+    engine.addSystem(new VehicleSystem());
     engine.addSystem(new BulletSystem());
+    engine.addSystem(new MoveSystem());
     engine.addSystem(new CameraSystem());
     engine.addSystem(new ControlSystem());
     engine.addSystem(new SpriteRotaterSystem());
@@ -37,13 +40,13 @@ void Game::init() {
     }
 
     {
-        auto e = Factory::createBase();
+        auto e = Factory::createVehicle();
         e->position = {128, 256};
         engine.addEntity(e);
     }
 
-    for (int i = 0; i < 1; ++i) {
-        Vector2 pos = {rand() % 1024, rand() % 1024};
+    for (int i = 0; i < 10; ++i) {
+        Vector2 pos = {rand() % 2048, rand() % 2048};
 
         {
             auto e = Factory::createBase();

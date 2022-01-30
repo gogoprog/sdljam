@@ -12,10 +12,11 @@ class ModeControlSystem : public System {
     void update(const float dt) override {
         auto &inputs = Context::get().inputs;
 
-        if (inputs.isKeyJustPressed(SDL_SCANCODE_LCTRL)) {
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_LCTRL) || inputs.isKeyJustPressed(SDL_SCANCODE_LSHIFT)) {
             Context::get().game.changeMode(Game::Mode::ROAD_BUILDING);
         }
-        if (inputs.isKeyJustReleased(SDL_SCANCODE_LCTRL)) {
+
+        if (inputs.isKeyJustReleased(SDL_SCANCODE_LCTRL) || inputs.isKeyJustReleased(SDL_SCANCODE_LSHIFT)) {
             Context::get().game.changeMode(Game::Mode::FIRING);
         }
     }
@@ -71,16 +72,21 @@ class RoadBuildingModeSystem : public System {
         auto tile_coords = level.getTileCoords(world_position);
         auto position = level.getTilePosition(tile_coords);
 
-        if (Context::get().inputs.isMousePressed(1)) {
-            level.setRoad(tile_coords, true);
-        }
-
-        if (Context::get().inputs.isMousePressed(3)) {
-            level.setRoad(tile_coords, false);
-        }
-
         auto &terrain = renderer.getTerrain("StoneSnow");
-        renderer.draw(position, terrain, Tile::FILL1);
+
+        if (inputs.isKeyPressed(SDL_SCANCODE_LCTRL)) {
+            if (Context::get().inputs.isMousePressed(1)) {
+                level.setRoad(tile_coords, true);
+            }
+            renderer.draw(position, terrain, Tile::FILL1);
+        }
+
+        if (inputs.isKeyPressed(SDL_SCANCODE_LSHIFT)) {
+            if (Context::get().inputs.isMousePressed(1)) {
+                level.setRoad(tile_coords, false);
+            }
+            renderer.draw(position, terrain, Tile::FILL2);
+        }
     }
 
   private:

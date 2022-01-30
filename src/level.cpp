@@ -2,8 +2,8 @@
 
 Level::Level() {
 
-    tilewidth = 256;
-    tileheight = 256;
+    tilewidth = 64;
+    tileheight = 64;
     width = tilewidth * tileSpacing;
     height = tileheight * tileSpacing;
 

@@ -16,10 +16,12 @@ class Entity {
     String name;
     Vector2 position;
 
-    template <typename T, typename... Args> void add(Args... args) {
+    template <typename T, typename... Args> T &add(Args... args) {
         components[T::name] = std::make_unique<T>(args...);
 
         notifyAdd(T::name);
+
+        return (T &)*components[T::name];
     }
 
     template <typename T> T &get() {

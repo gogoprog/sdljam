@@ -35,10 +35,10 @@ class ControlSystem : public System {
             entity.position.y += dt * speed;
         }
 
-        if (inputs.isMouseJustPressed(2)) {
+        if (inputs.isMouseJustPressed(3)) {
             control.startMousePosition = inputs.getMousePosition();
             control.startPosition = entity.position;
-        } else if (inputs.isMousePressed(2)) {
+        } else if (inputs.isMousePressed(3)) {
             auto mouse_pos = inputs.getMousePosition();
             auto delta = mouse_pos - control.startMousePosition;
             entity.position = control.startPosition - delta;
