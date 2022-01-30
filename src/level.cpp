@@ -9,10 +9,15 @@ Level::Level() {
 
     buildCache();
 
-    for (int i = 0; i < 64; ++i) {
-        setRoad({i, 14}, true);
+    for (int i = 0; i < 50; ++i) {
         setRoad({20, i}, true);
     }
+
+    for (int i = 20; i < 64; ++i) {
+        setRoad({i, 50}, true);
+    }
+
+    spawnCoords = {64, 50};
 }
 
 void Level::render(Renderer &renderer) {

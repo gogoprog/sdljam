@@ -28,6 +28,14 @@ class Entity {
         return (T &)*components[T::name];
     }
 
+    template <typename T> void remove() {
+        components.erase(T::name);
+    }
+
+    template <typename T> bool has() {
+        return components.find(T::name) != components.end();
+    }
+
     void notifyAdd(const String component_name);
     void notifyRemove(const String component_name);
 

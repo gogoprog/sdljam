@@ -14,9 +14,13 @@ class VehicleSystem : public System {
     }
 
     void onEntityAdded(Entity &entity) override {
-        auto &move = entity.add<Move>(entity.position, Vector2{1024, 1024}, 100);
+        /* auto &move = entity.add<Move>(entity.position, Vector2{350, 256}, 100); */
     }
 
     void updateSingle(const float dt, Entity &entity) override {
+
+        if (!entity.has<Move>()) {
+            entity.add<Move>(entity.position, Vector2{rand() % 1024, rand() % 1024}, 100);
+        }
     }
 };

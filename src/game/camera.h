@@ -18,7 +18,7 @@ class CameraSystem : public System {
         auto &level = Context::get().level;
 
         if (renderer.width < level.width) {
-            position.x = std::clamp<int>(position.x, 0, level.width - renderer.width);
+            position.x = std::clamp<int>(position.x, 0, level.width - renderer.width + 160);
         }
 
         if (renderer.height < level.height) {

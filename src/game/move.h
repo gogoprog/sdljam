@@ -5,11 +5,16 @@
 #include "factory.h"
 #include "sprite.h"
 
+struct Movable : public Component {
+    inline static String name = "Movable";
+};
+
 struct Move : public Component {
     inline static String name = "Move";
 
     Move(Vector2 f, Vector2 t, float s) : from(f), to(t), speed(s) {
     }
+
     Vector2 from;
     Vector2 to;
     float speed;
@@ -41,6 +46,10 @@ class MoveSystem : public System {
             move.time += dt;
             auto progress = move.time / move.duration;
             entity.position = move.from + (move.to - move.from) * progress;
+
+            if (progress >= 1) {
+                entity.remove<Move>();
+            }
         }
     }
 };

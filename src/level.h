@@ -38,6 +38,8 @@ class Level {
     int tilewidth;
     int tileheight;
 
+    Vector2 spawnCoords;
+
   private:
     Map<Vector2, bool> roadmap;
     Vector<int> cachedTypes;
