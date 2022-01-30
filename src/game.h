@@ -4,6 +4,7 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/turret.h"
+#include "game/ui.h"
 
 class Game {
   public:
@@ -13,6 +14,7 @@ class Game {
         engine.addSystem(new BulletSystem());
         engine.addSystem(new CameraSystem());
         engine.addSystem(new ControlSystem());
+        engine.addSystem(new UiSystem());
 
         {
             auto e = std::make_shared<Entity>();

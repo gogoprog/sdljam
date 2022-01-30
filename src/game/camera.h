@@ -13,6 +13,13 @@ class CameraSystem : public System {
     }
 
     void updateSingle(const float dt, Entity &entity) override {
-        Context::get().renderer.getCameraPosition() = {int(entity.position.x), int(entity.position.y)};
+        Vector2 position = {int(entity.position.x), int(entity.position.y)};
+
+        position.x = std::clamp<int>(position.x, 0, Context::get().level.width - Context::get().renderer.width);
+        position.y = std::clamp<int>(position.y, 0, Context::get().level.height - Context::get().renderer.height);
+
+        entity.position = position;
+
+        Context::get().renderer.getCameraPosition() = position;
     }
 };

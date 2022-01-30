@@ -2,6 +2,11 @@
 
 Level::Level() {
 
+    tilewidth = 45;
+    tileheight = 25;
+    width = tilewidth * Tile::SIZE * 2;
+    height = tileheight * Tile::SIZE * 2;
+
     for (int i = 0; i < 64; ++i) {
         roadmap[{i, 14}] = true;
         roadmap[{20, i}] = true;
@@ -12,8 +17,8 @@ void Level::render(Renderer &renderer) {
     auto &terrain = renderer.getTerrain("StoneSnow");
     auto spacing = Tile::SIZE * 2;
 
-    for (int x = 0; x < 64; ++x) {
-        for (int y = 0; y < 64; ++y) {
+    for (int x = 0; x < tilewidth; ++x) {
+        for (int y = 0; y < tileheight; ++y) {
             Vector2 pos{x, y};
             int type = Tile::FILL2;
 

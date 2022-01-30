@@ -26,5 +26,6 @@ void loadData(Renderer &renderer) {
     renderer.loadTerrain("StoneSnow");
     renderer.loadTerrain("SnowPink");
 
-    renderer.loadTexture("Panel");
+    renderer.loadTexture("Panel", false);
+    renderer.loadTexture("Cursor1");
 }

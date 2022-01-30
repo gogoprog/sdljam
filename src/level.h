@@ -8,6 +8,11 @@ class Level {
     Level();
     void render(Renderer &renderer);
 
+    int width;
+    int height;
+    int tilewidth;
+    int tileheight;
+
   private:
     Map<Vector2, bool> roadmap;
 };

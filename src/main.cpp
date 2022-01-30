@@ -76,7 +76,6 @@ int main(int arc, char **argv) {
         engine.update(delta_time);
         /* viewer("Turret"); */
 
-        renderer.draw({1280 - 160, 0}, "Panel");
 
         renderer.update();
 

@@ -41,9 +41,9 @@ class System {
     System() = default;
     ~System() = default;
 
-    void update(const float dt);
+    virtual void update(const float dt);
     virtual void onEntityAdded(Entity &entity){};
-    virtual void updateSingle(const float dt, Entity &entity) = 0;
+    virtual void updateSingle(const float dt, Entity &entity){};
 
   protected:
     Vector<String> componentsNames;

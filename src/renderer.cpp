@@ -20,6 +20,7 @@ struct Atlas {
 struct Texture {
     SDL_Rect rect;
     SDL_Texture *texture;
+    Vector2 pivot;
 };
 
 struct Renderer::Pimpl {
@@ -37,7 +38,9 @@ Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
 Renderer::~Renderer() = default;
 
 void Renderer::init() {
-    SDL_CreateWindowAndRenderer(1280, 800, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
+    width = 1280;
+    height = 800;
+    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
     SDL_SetWindowTitle(pimpl->window, "hardvacuum-defense");
 }
 
@@ -206,13 +209,21 @@ void Renderer::loadTerrain(const std::string &name) {
     std::cout << "Loaded terrain '" << name << "'" << std::endl;
 }
 
-void Renderer::loadTexture(const std::string &name) {
+void Renderer::loadTexture(const std::string &name, const bool center_pivot) {
     std::string path;
     path = "res/" + name + ".bmp";
     auto surface = SDL_LoadBMP(path.c_str());
     Texture texture;
+    SDL_SetColorKey(surface, true, 255);
     texture.texture = SDL_CreateTextureFromSurface(pimpl->renderer, surface);
     texture.rect = {0, 0, surface->w, surface->h};
+
+    if (center_pivot) {
+        texture.pivot = {surface->w, surface->h};
+    } else {
+        texture.pivot = {0, 0};
+    }
+
     pimpl->textures[name] = texture;
 }
 
@@ -253,6 +264,8 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     auto drect = rect;
     drect.x = pos.x;
     drect.y = pos.y;
+    drect.x -= texture.pivot.x;
+    drect.y -= texture.pivot.y;
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
