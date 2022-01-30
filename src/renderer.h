@@ -44,7 +44,7 @@ class Renderer {
     void clear();
     void update();
 
-    void loadAtlas(const std::string &name);
+    void loadAtlas(const std::string &name, const bool skip_empty = true);
     void loadTerrain(const std::string &name);
     void loadTexture(const std::string &name, const bool center_pivot = true);
     const Terrain &getTerrain(const std::string &name);

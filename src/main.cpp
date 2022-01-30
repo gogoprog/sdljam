@@ -79,7 +79,7 @@ int main(int arc, char **argv) {
         level.render(renderer);
         engine.update(delta_time);
 
-        /* viewer("Turret"); */
+        /* viewer("Bullets"); */
 
         renderer.update();
 

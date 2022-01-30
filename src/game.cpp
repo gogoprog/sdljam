@@ -30,7 +30,7 @@ void Game::init() {
         engine.addEntity(e);
     }
 
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 1; ++i) {
         Vector2 pos = {rand() % 1024, rand() % 1024};
 
         {

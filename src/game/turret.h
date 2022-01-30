@@ -3,6 +3,7 @@
 #include "../context.h"
 #include "bullet.h"
 #include "factory.h"
+#include "sprite.h"
 
 struct Turret : public Component {
     inline static String name = "Turret";
@@ -27,9 +28,11 @@ class TurretSystem : public System {
         if (turret.timeSinceLastFire > 0.25 && Context::get().inputs.isMousePressed(1)) {
             turret.timeSinceLastFire = 0;
             auto e = Factory::createBullet();
-            auto speed = 1000;
+            auto speed = 100;
             auto angle = (rotatable.angle - 90) * std::numbers::pi / 180.0f;
-            e->get<Bullet>().velocity = Vector2(std::cos(angle) * speed, std::sin(angle) * speed);
+            auto velocity = Vector2(std::cos(angle) * speed, std::sin(angle) * speed);
+            e->get<Bullet>().velocity = velocity;
+            e->get<RotatableSprite>().angle = rotatable.angle;
             e->position = entity.position;
             Context::get().engine.addEntity(e);
         }

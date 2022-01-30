@@ -12,7 +12,7 @@ struct Sprite : public Component {
 struct RotatableSprite : public Component {
     inline static String name = "RotatableSprite";
     float angle;
-    Array<int, 8> frames;
+    Span<const int> frames;
     int frameOffset{0};
 };
 

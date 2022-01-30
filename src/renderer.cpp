@@ -52,7 +52,7 @@ void Renderer::update() {
     SDL_RenderPresent(pimpl->renderer);
 }
 
-void Renderer::loadAtlas(const std::string &name) {
+void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
     std::string path;
     path = "res/" + name + ".bmp";
 
@@ -169,8 +169,8 @@ void Renderer::loadAtlas(const std::string &name) {
                     result = check_rect(rect);
                 }
 
-                if (result == VALID) {
-                    atlas.frames.push_back({rect, {rect.w / 2, rect.h / 2}});
+                if (result == VALID || (!skip_empty && result == EMPTY)) {
+                    atlas.frames.push_back({rect, {rect.w, rect.h}});
                 }
             }
         }
