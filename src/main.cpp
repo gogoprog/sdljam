@@ -17,6 +17,7 @@ int main(int arc, char **argv) {
     auto &inputs = context.inputs;
     auto &engine = context.engine;
     auto &level = context.level;
+    auto &game = context.game;
 
     renderer.init();
 
@@ -45,7 +46,7 @@ int main(int arc, char **argv) {
         }
     };
 
-    Game::init();
+    game.init();
 
     auto last_ticks = SDL_GetTicks();
     while (!quit) {

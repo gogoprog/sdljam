@@ -4,6 +4,7 @@
 #include "inputs.h"
 #include "level.h"
 #include "ecs.h"
+#include "game.h"
 
 class Context {
   public:
@@ -11,6 +12,7 @@ class Context {
     Inputs inputs;
     Level level;
     Engine engine;
+    Game game;
 
     static Context & get() {
         static Context instance;

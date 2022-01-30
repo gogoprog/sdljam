@@ -6,6 +6,7 @@ struct Sprite : public Component {
     inline static String name = "Sprite";
     String atlasName;
     int frameIndex{0};
+    int layer = 0;
 };
 
 struct RotatableSprite : public Component {
@@ -21,12 +22,30 @@ class SpriteRendererSystem : public System {
         componentsNames.push_back("Sprite");
     }
 
-    void updateSingle(const float dt, Entity &entity) override {
+    void update(const float dt) override {
         auto &renderer = Context::get().renderer;
-        auto &sprite = entity.get<Sprite>();
+        for (auto &items : itemsPerLayer) {
+            items.resize(0);
+        }
 
-        renderer.draw(entity.position, sprite.atlasName, sprite.frameIndex);
+        System::update(dt);
+
+        for (auto &items : itemsPerLayer) {
+            for (auto &item : items) {
+                renderer.draw(item.first, item.second->atlasName, item.second->frameIndex);
+            }
+        }
     }
+
+    void updateSingle(const float dt, Entity &entity) override {
+        auto &sprite = entity.get<Sprite>();
+        itemsPerLayer[sprite.layer].emplace_back(entity.position, &sprite);
+    }
+
+  private:
+    using Item = std::pair<Vector2, Sprite *>;
+
+    Array<Vector<Item>, 3> itemsPerLayer;
 };
 
 class SpriteRotaterSystem : public System {

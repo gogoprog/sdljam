@@ -12,6 +12,7 @@ add_executable(
     src/renderer.cpp
     src/level.cpp
     src/game.cpp
+    src/game/factory.cpp
     # src/inputs.cpp
     )
 

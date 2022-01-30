@@ -25,7 +25,5 @@ class BulletSystem : public System {
             engine->removeEntity(entity);
             return;
         }
-
-        Context::get().renderer.draw(entity.position, "Bullets", 0);
     }
 };

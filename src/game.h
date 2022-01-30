@@ -2,5 +2,5 @@
 
 class Game {
   public:
-    static void init();
+    void init();
 };
