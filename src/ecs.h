@@ -68,6 +68,11 @@ class Engine {
         }
     }
 
+    void removeEntity(Entity &entity) {
+        auto end_it = std::remove_if(entities.begin(), entities.end(), [&](auto &se) { return &*se == &entity; });
+        entities.resize(end_it - entities.begin());
+    }
+
     void update(const float dt) {
         for (auto &system : systems) {
             system->update(dt);
