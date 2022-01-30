@@ -206,7 +206,7 @@ void Renderer::loadTerrain(const std::string &name) {
     terrain.texture = SDL_CreateTextureFromSurface(pimpl->renderer, terrain.surface);
 
     pimpl->terrains[name] = terrain;
-    std::cout << "Loaded terrain '" << name << "'" << std::endl;
+    std::cout << "Loaded " << terrain.tiles.size() << " tiles for terrain '" << name << "'" << std::endl;
 }
 
 void Renderer::loadTexture(const std::string &name, const bool center_pivot) {
@@ -225,6 +225,7 @@ void Renderer::loadTexture(const std::string &name, const bool center_pivot) {
     }
 
     pimpl->textures[name] = texture;
+    std::cout << "Loaded texture '" << name << "'" << std::endl;
 }
 
 const Terrain &Renderer::getTerrain(const std::string &name) {
