@@ -41,6 +41,9 @@ class System {
     System() = default;
     ~System() = default;
 
+    virtual void onAdded(){};
+    virtual void onRemoved(){};
+
     virtual void update(const float dt);
     virtual void onEntityAdded(Entity &entity){};
     virtual void updateSingle(const float dt, Entity &entity){};
@@ -57,13 +60,14 @@ class Engine {
     void addSystem(System *system) {
         systems.push_back(system);
         system->engine = this;
+        system->onAdded();
     };
 
     void removeSystem(System *system) {
         auto it = std::find(systems.begin(), systems.end(), system);
         if (it != systems.end()) {
             systems.erase(std::find(systems.begin(), systems.end(), system));
-            system->engine = nullptr;
+            system->onRemoved();
         }
     };
 
@@ -82,7 +86,8 @@ class Engine {
     }
 
     void update(const float dt) {
-        for (auto &system : systems) {
+        auto systems_copy = systems;
+        for (auto &system : systems_copy) {
             system->update(dt);
         }
     }

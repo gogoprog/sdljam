@@ -41,6 +41,10 @@ class Inputs {
         return !previousKeyStates[key] && currentKeyStates[key];
     }
 
+    bool isKeyJustReleased(const int key) /*const*/ {
+        return previousKeyStates[key] && !currentKeyStates[key];
+    }
+
     bool isKeyPressed(const int key) /*const*/ {
         return currentKeyStates[key];
     }

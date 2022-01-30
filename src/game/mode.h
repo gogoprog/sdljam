@@ -11,6 +11,13 @@ class ModeControlSystem : public System {
 
     void update(const float dt) override {
         auto &inputs = Context::get().inputs;
+
+        if (inputs.isKeyJustPressed(SDL_SCANCODE_LCTRL)) {
+            Context::get().game.changeMode(Game::Mode::ROAD_BUILDING);
+        }
+        if (inputs.isKeyJustReleased(SDL_SCANCODE_LCTRL)) {
+            Context::get().game.changeMode(Game::Mode::FIRING);
+        }
     }
 };
 
@@ -57,7 +64,21 @@ class RoadBuildingModeSystem : public System {
 
     void update(const float dt) override {
         auto &inputs = Context::get().inputs;
+        auto &level = Context::get().level;
         auto &renderer = Context::get().renderer;
-        auto &mouse_position = inputs.getMousePosition();
+        auto world_position = Context::get().getMouseWorldPosition();
+
+        auto tile_coords = level.getTileCoords(world_position);
+        auto position = level.getTilePosition(tile_coords);
+
+        if (Context::get().inputs.isMousePressed(1)) {
+            level.setRoad(tile_coords, true);
+        }
+
+        auto &terrain = renderer.getTerrain("StoneSnow");
+        renderer.draw(position, terrain, Tile::FILL1);
     }
+
+  private:
+    SharedPtr<Entity> preview;
 };
