@@ -2,6 +2,8 @@
 
 #include "../context.h"
 
+#include "hittable.h"
+
 struct Bullet : public Component {
     inline static String name = "Bullet";
     Vector2 velocity;
@@ -25,5 +27,9 @@ class BulletSystem : public System {
             engine->removeEntity(entity);
             return;
         }
+
+        engine->iterate<Hittable>([&](auto &hentity) {
+
+        });
     }
 };

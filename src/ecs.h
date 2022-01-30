@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include <algorithm>
+#include <functional>
 
 struct Component {};
 
@@ -71,7 +72,7 @@ class Engine {
         systems.push_back(system);
         system->engine = this;
         system->onAdded();
-    };
+    }
 
     void removeSystem(System *system) {
         auto it = std::find(systems.begin(), systems.end(), system);
@@ -79,7 +80,7 @@ class Engine {
             systems.erase(std::find(systems.begin(), systems.end(), system));
             system->onRemoved();
         }
-    };
+    }
 
     void addEntity(SharedPtr<Entity> entity) {
         entities.push_back(entity);
@@ -114,6 +115,17 @@ class Engine {
                     })) {
                     system->onEntityAdded(entity);
                 }
+            }
+        }
+    }
+
+    template <typename T> void iterate(std::function<void(Entity &entity)> func) {
+        auto entities_copy = entities;
+        for (auto &entityptr : entities_copy) {
+            auto &entity = *entityptr;
+
+            if (entity.has<T>()) {
+                func(entity);
             }
         }
     }

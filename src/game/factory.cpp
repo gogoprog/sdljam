@@ -8,6 +8,7 @@
 #include "ui.h"
 #include "vehicle.h"
 #include "spawn.h"
+#include "hittable.h"
 
 const Array<int, 8> turret_frames = {2, 3, 5, 6, 7, 8, 9, 4};
 const Array<int, 8> bullet_frames = {1, 2, 14, 26, 25, 24, 12, 0};
@@ -64,6 +65,8 @@ SharedPtr<Entity> Factory::createVehicle() {
     e->get<Sprite>().frameIndex = 0;
     e->add<RotatableSprite>();
     e->get<RotatableSprite>().frames = std::span(tank_frames);
+    e->add<Hittable>();
+    e->get<Hittable>().radius = 20;
 
     return e;
 }
