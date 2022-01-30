@@ -11,6 +11,7 @@
 
 struct Game::Pimpl {
     FiringModeSystem firingModeSystem;
+    RoadBuildingModeSystem roadBuildingModeSystem;
 };
 
 Game::Game() : pimpl(new Game::Pimpl()) {
@@ -65,12 +66,14 @@ void Game::changeMode(const Mode mode) {
 
     switch (mode) {
         case Mode::FIRING:
+            engine.removeSystem(&pimpl->roadBuildingModeSystem);
             engine.addSystem(&pimpl->firingModeSystem);
             break;
         case Mode::TURRET_BUILDING:
             break;
         case Mode::ROAD_BUILDING:
-
+            engine.removeSystem(&pimpl->firingModeSystem);
+            engine.addSystem(&pimpl->roadBuildingModeSystem);
             break;
     }
 }

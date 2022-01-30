@@ -13,11 +13,6 @@ class UiSystem : public System {
 
         auto &mouse_position = inputs.getMousePosition();
 
-        /*         renderer.draw({renderer.width - 160, 0}, "Panel"); */
-
-        /*         if (mouse_position.x > renderer.width - 160) { */
-        /*         } else { */
-        /*             renderer.draw(inputs.getMousePosition(), "Cursor1"); */
-        /*         } */
+        renderer.draw({renderer.width - 160, 0}, "Panel");
     }
 };

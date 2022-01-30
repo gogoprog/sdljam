@@ -11,16 +11,6 @@ class ModeControlSystem : public System {
 
     void update(const float dt) override {
         auto &inputs = Context::get().inputs;
-        auto &renderer = Context::get().renderer;
-
-        auto &mouse_position = inputs.getMousePosition();
-
-        renderer.draw({renderer.width - 160, 0}, "Panel");
-
-        if (mouse_position.x > renderer.width - 160) {
-        } else {
-            renderer.draw(inputs.getMousePosition(), "Cursor1");
-        }
     }
 };
 
@@ -31,7 +21,17 @@ class FiringModeSystem : public System {
         componentsNames.push_back("RotatableSprite");
     }
 
-    void onEntityAdded(Entity &entity) override {
+    void update(const float dt) override {
+        System::update(dt);
+
+        auto &inputs = Context::get().inputs;
+        auto &renderer = Context::get().renderer;
+        auto &mouse_position = inputs.getMousePosition();
+
+        if (mouse_position.x > renderer.width - 160) {
+        } else {
+            renderer.draw(inputs.getMousePosition(), "Cursor1");
+        }
     }
 
     void updateSingle(const float dt, Entity &entity) override {
@@ -39,7 +39,7 @@ class FiringModeSystem : public System {
         auto &turret = entity.get<Turret>();
         auto &rotatable = entity.get<RotatableSprite>();
 
-        if (Context::get().inputs.isMousePressed(1)) {
+        if (turret.timeSinceLastFire > 0.20 && Context::get().inputs.isMousePressed(1)) {
             turret.mustFire = true;
         }
 
@@ -47,5 +47,17 @@ class FiringModeSystem : public System {
             auto delta = cursor_position - entity.position;
             rotatable.angle = (std::atan2(delta.y, delta.x) * 180.0f / std::numbers::pi) + 90;
         }
+    }
+};
+
+class RoadBuildingModeSystem : public System {
+  public:
+    RoadBuildingModeSystem() {
+    }
+
+    void update(const float dt) override {
+        auto &inputs = Context::get().inputs;
+        auto &renderer = Context::get().renderer;
+        auto &mouse_position = inputs.getMousePosition();
     }
 };

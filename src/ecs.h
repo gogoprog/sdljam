@@ -59,6 +59,14 @@ class Engine {
         system->engine = this;
     };
 
+    void removeSystem(System *system) {
+        auto it = std::find(systems.begin(), systems.end(), system);
+        if (it != systems.end()) {
+            systems.erase(std::find(systems.begin(), systems.end(), system));
+            system->engine = nullptr;
+        }
+    };
+
     void addEntity(SharedPtr<Entity> entity) {
         entities.push_back(entity);
         entity->engine = this;
