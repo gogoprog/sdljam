@@ -69,9 +69,12 @@ class Engine {
 
   public:
     void addSystem(System *system) {
-        systems.push_back(system);
-        system->engine = this;
-        system->onAdded();
+        auto it = std::find(systems.begin(), systems.end(), system);
+        if (it == systems.end()) {
+            systems.push_back(system);
+            system->engine = this;
+            system->onAdded();
+        }
     }
 
     void removeSystem(System *system) {
