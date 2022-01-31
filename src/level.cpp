@@ -19,7 +19,6 @@ Level::Level() {
     }
 
     beginCoords = {64, 50};
-    beginCoords = {20, 20};
     endCoords = {20, 0};
 
     /* setRoad({20, 1}, false); */
@@ -38,16 +37,13 @@ void Level::render(Renderer &renderer) {
 }
 
 bool Level::findPath(Path &path, const Vector2 &start, const Vector2 &end) {
-    static constexpr Array<Vector2, 8> directions = {Vector2{0, -1}, {1, 0},  {0, 1},   {-1, 0},
-                                                     {1, 1},         {1, -1}, {-1, -1}, {-1, 1}};
-
     struct Node {
         Path path;
         float distanceLeft;
 
         bool operator<(const Node &other) const {
             if (distanceLeft == other.distanceLeft) {
-                return path.size() < other.path.size();
+                return path.size() > other.path.size();
             }
             return distanceLeft > other.distanceLeft;
         }
@@ -56,25 +52,31 @@ bool Level::findPath(Path &path, const Vector2 &start, const Vector2 &end) {
     std::priority_queue<Node> q;
     q.push({{start}, (start - end).getLength()});
 
+    Map<Vector2, int> visited;
+
     while (!q.empty()) {
         const auto node = q.top();
         q.pop();
         const auto last = node.path.back();
 
-        if (last == end) {
-            path = node.path;
-            return true;
-            break;
-        } else {
-            for (auto &direction : directions) {
-                auto next = last + direction;
+        if (visited.find(last) == visited.end() || visited[last] > node.path.size()) {
+            visited[last] = node.path.size();
 
-                if (getRoad(next)) {
-                    if (std::find(node.path.begin(), node.path.end(), next) == node.path.end()) {
-                        auto copy = node;
-                        copy.path.push_back(next);
-                        copy.distanceLeft = (next - end).getLength();
-                        q.push(copy);
+            if (last == end) {
+                path = node.path;
+                return true;
+                break;
+            } else {
+                for (auto &direction : directions) {
+                    auto next = last + direction;
+
+                    if (getRoad(next)) {
+                        if (std::find(node.path.begin(), node.path.end(), next) == node.path.end()) {
+                            auto copy = node;
+                            copy.path.push_back(next);
+                            copy.distanceLeft = (next - end).getLength();
+                            q.push(copy);
+                        }
                     }
                 }
             }

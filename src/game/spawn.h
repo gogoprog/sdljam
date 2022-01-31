@@ -22,7 +22,7 @@ class SpawnSystem : public System {
 
         spawn.timeSinceLastSpawn += dt;
 
-        if (spawn.timeSinceLastSpawn > 10000.0) {
+        if (spawn.timeSinceLastSpawn > 1.0) {
 
             auto e = Factory::createVehicle();
             e->position = entity.position;

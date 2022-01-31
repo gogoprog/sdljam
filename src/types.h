@@ -72,3 +72,6 @@ inline float clampAngle(const float input) {
 
     return result;
 }
+
+static constexpr Array<Vector2, 8> directions = {Vector2{0, -1}, {1, 0},  {0, 1},   {-1, 0},
+                                                 {1, 1},         {1, -1}, {-1, -1}, {-1, 1}};

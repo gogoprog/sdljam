@@ -5,11 +5,11 @@
 #include "game/control.h"
 #include "game/factory.h"
 #include "game/mode.h"
+#include "game/spawn.h"
 #include "game/sprite.h"
 #include "game/turret.h"
 #include "game/ui.h"
 #include "game/vehicle.h"
-#include "game/spawn.h"
 
 struct Game::Pimpl {
     FiringModeSystem firingModeSystem;
@@ -50,7 +50,7 @@ void Game::init() {
 
     {
         auto e = Factory::createSpawn();
-        e->position = level.getTilePosition(level.beginCoords);
+        e->position = level.getTileCenterPosition(level.beginCoords);
         engine.addEntity(e);
     }
 
