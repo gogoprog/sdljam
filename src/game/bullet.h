@@ -3,6 +3,7 @@
 #include "../context.h"
 
 #include "hittable.h"
+#include "life.h"
 
 struct Bullet : public Component {
     inline static String name = "Bullet";
@@ -28,8 +29,17 @@ class BulletSystem : public System {
             return;
         }
 
-        engine->iterate<Hittable>([&](auto &hentity) {
+        engine->iterate<Hittable>([&](Entity &other_entity) {
+            auto delta = other_entity.position - entity.position;
 
+            if (delta.getSquareLength() < 32 * 32) {
+                other_entity.get<Life>().hp -= 1;
+                engine->removeEntity(entity);
+
+                return false;
+            }
+
+            return true;
         });
     }
 };

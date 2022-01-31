@@ -3,12 +3,12 @@
 #include "bullet.h"
 #include "camera.h"
 #include "control.h"
+#include "hittable.h"
+#include "spawn.h"
 #include "sprite.h"
 #include "turret.h"
 #include "ui.h"
 #include "vehicle.h"
-#include "spawn.h"
-#include "hittable.h"
 
 const Array<int, 8> turret_frames = {2, 3, 5, 6, 7, 8, 9, 4};
 const Array<int, 8> bullet_frames = {1, 2, 14, 26, 25, 24, 12, 0};
@@ -68,6 +68,7 @@ SharedPtr<Entity> Factory::createVehicle() {
     e->add<Movable>();
     e->add<Hittable>();
     e->get<Hittable>().radius = 20;
+    e->add<Life>();
 
     return e;
 }

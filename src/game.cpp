@@ -29,6 +29,7 @@ void Game::init() {
     engine.addSystem(new TurretSystem());
     engine.addSystem(new VehicleSystem());
     engine.addSystem(new BulletSystem());
+    engine.addSystem(new LifeSystem());
     engine.addSystem(new MoveSystem());
     engine.addSystem(new CameraSystem());
     engine.addSystem(new ControlSystem());

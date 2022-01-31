@@ -32,6 +32,10 @@ class Vector2 {
         return std::sqrt(x * x + y * y);
     }
 
+    float getSquareLength() const {
+        return x * x + y * y;
+    }
+
     Vector2 getNormalized() const {
         auto len = getLength();
         return {x / len, y / len};

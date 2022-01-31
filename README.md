@@ -1,4 +1,4 @@
-# hardefense
+# Vacuum Cleaner : The Tower Defense Game
 
 Entry for the SDL Enthusiasts 1K members GameJam.
 

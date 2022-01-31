@@ -122,13 +122,15 @@ class Engine {
         }
     }
 
-    template <typename T> void iterate(std::function<void(Entity &entity)> func) {
+    template <typename T> void iterate(std::function<bool(Entity &entity)> func) {
         auto entities_copy = entities;
         for (auto &entityptr : entities_copy) {
             auto &entity = *entityptr;
 
             if (entity.has<T>()) {
-                func(entity);
+                if (!func(entity)) {
+                    break;
+                }
             }
         }
     }

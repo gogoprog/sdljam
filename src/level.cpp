@@ -19,9 +19,10 @@ Level::Level() {
     }
 
     beginCoords = {64, 50};
-    endCoords = {20, 0};
+    endCoords = {20, -1};
 
-    /* setRoad({20, 1}, false); */
+    setRoad(beginCoords, true);
+    setRoad(endCoords, true);
 }
 
 void Level::render(Renderer &renderer) {
