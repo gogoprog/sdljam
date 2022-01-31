@@ -7,7 +7,7 @@
 struct Spawn : public Component {
     inline static String name = "Spawn";
 
-    float timeSinceLastSpawn{0};
+    float timeSinceLastSpawn{10000};
 };
 
 class SpawnSystem : public System {
@@ -22,7 +22,7 @@ class SpawnSystem : public System {
 
         spawn.timeSinceLastSpawn += dt;
 
-        if (spawn.timeSinceLastSpawn > 1.0) {
+        if (spawn.timeSinceLastSpawn > 10000.0) {
 
             auto e = Factory::createVehicle();
             e->position = entity.position;

@@ -1,9 +1,10 @@
 #include "level.h"
+#include <queue>
 
 Level::Level() {
-
     tilewidth = 64;
     tileheight = 64;
+
     width = tilewidth * tileSpacing;
     height = tileheight * tileSpacing;
 
@@ -17,7 +18,11 @@ Level::Level() {
         setRoad({i, 50}, true);
     }
 
-    spawnCoords = {64, 50};
+    beginCoords = {64, 50};
+    beginCoords = {20, 20};
+    endCoords = {20, 0};
+
+    /* setRoad({20, 1}, false); */
 }
 
 void Level::render(Renderer &renderer) {
@@ -30,6 +35,53 @@ void Level::render(Renderer &renderer) {
             ++i;
         }
     }
+}
+
+bool Level::findPath(Path &path, const Vector2 &start, const Vector2 &end) {
+    static constexpr Array<Vector2, 8> directions = {Vector2{0, -1}, {1, 0},  {0, 1},   {-1, 0},
+                                                     {1, 1},         {1, -1}, {-1, -1}, {-1, 1}};
+
+    struct Node {
+        Path path;
+        float distanceLeft;
+
+        bool operator<(const Node &other) const {
+            if (distanceLeft == other.distanceLeft) {
+                return path.size() < other.path.size();
+            }
+            return distanceLeft > other.distanceLeft;
+        }
+    };
+
+    std::priority_queue<Node> q;
+    q.push({{start}, (start - end).getLength()});
+
+    while (!q.empty()) {
+        const auto node = q.top();
+        q.pop();
+        const auto last = node.path.back();
+
+        if (last == end) {
+            path = node.path;
+            return true;
+            break;
+        } else {
+            for (auto &direction : directions) {
+                auto next = last + direction;
+
+                if (getRoad(next)) {
+                    if (std::find(node.path.begin(), node.path.end(), next) == node.path.end()) {
+                        auto copy = node;
+                        copy.path.push_back(next);
+                        copy.distanceLeft = (next - end).getLength();
+                        q.push(copy);
+                    }
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 void Level::buildCache() {

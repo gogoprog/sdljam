@@ -65,6 +65,7 @@ SharedPtr<Entity> Factory::createVehicle() {
     e->get<Sprite>().frameIndex = 0;
     e->add<RotatableSprite>();
     e->get<RotatableSprite>().frames = std::span(tank_frames);
+    e->add<Movable>();
     e->add<Hittable>();
     e->get<Hittable>().radius = 20;
 

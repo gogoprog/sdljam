@@ -50,7 +50,7 @@ void Game::init() {
 
     {
         auto e = Factory::createSpawn();
-        e->position = level.getTilePosition(level.spawnCoords);
+        e->position = level.getTilePosition(level.beginCoords);
         engine.addEntity(e);
     }
 

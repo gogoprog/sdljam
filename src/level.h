@@ -3,6 +3,8 @@
 #include "renderer.h"
 #include "types.h"
 
+using Path = Vector<Vector2>;
+
 class Level {
   public:
     inline static int tileSpacing = Tile::SIZE * 2;
@@ -20,6 +22,10 @@ class Level {
         return {coords.x * tileSpacing, coords.y * tileSpacing};
     }
 
+    inline Vector2 getTileCenterPosition(const Vector2 &coords) const {
+        return {coords.x * tileSpacing + tileSpacing / 2, coords.y * tileSpacing + tileSpacing / 2};
+    }
+
     void setRoad(const Vector2 &coords, const bool value) {
         roadmap[coords] = value;
         updateCache({coords.x - 1, coords.y - 1}, {coords.x + 1, coords.y + 1});
@@ -30,17 +36,21 @@ class Level {
     }
 
     void render(Renderer &renderer);
-    void buildCache();
-    void updateCache(const Vector2 &from, const Vector2 &to);
+
+    bool findPath(Path &path, const Vector2 &start, const Vector2 &end);
 
     int width;
     int height;
     int tilewidth;
     int tileheight;
 
-    Vector2 spawnCoords;
+    Vector2 beginCoords;
+    Vector2 endCoords;
 
   private:
+    void buildCache();
+    void updateCache(const Vector2 &from, const Vector2 &to);
+
     Map<Vector2, bool> roadmap;
     Vector<int> cachedTypes;
 };
