@@ -53,7 +53,7 @@ void Renderer::update() {
 }
 
 void Renderer::loadAtlas(const std::string &name, const bool skip_empty, const int delimiter, const bool check_content,
-                         const bool skip1) {
+                         const bool skip1, const int step) {
     std::string path;
     path = "res/" + name + ".bmp";
 
@@ -142,8 +142,8 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty, const i
         return EMPTY;
     };
 
-    for (int y = 0; y < surface->h; ++y) {
-        for (int x = 0; x < surface->w; ++x) {
+    for (int y = 0; y < surface->h; y += step) {
+        for (int x = 0; x < surface->w; x += step) {
             auto v = pixels[y * pitch + x];
 
             if (v == delimiter) {

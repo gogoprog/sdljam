@@ -77,9 +77,9 @@ int main(int arc, char **argv) {
         }
 
         level.render(renderer);
-        /* engine.update(delta_time); */
+        engine.update(delta_time);
 
-        viewer("explosn");
+        /* viewer("explosn"); */
 
         renderer.update();
 
