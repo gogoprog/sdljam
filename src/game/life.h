@@ -3,6 +3,7 @@
 #include "../context.h"
 
 #include "factory.h"
+#include "shake.h"
 
 struct Life : public Component {
     inline static String name = "Life";
@@ -25,6 +26,11 @@ class LifeSystem : public System {
             engine->addEntity(e);
 
             engine->removeEntity(entity);
+
+            if (!Context::get().cameraEntity->has<Shake>()) {
+
+                Context::get().cameraEntity->add<Shake>();
+            }
         }
     }
 };

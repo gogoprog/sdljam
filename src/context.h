@@ -14,6 +14,8 @@ class Context {
     Engine engine;
     Game game;
 
+    SharedPtr<Entity> cameraEntity;
+
     static Context & get() {
         static Context instance;
         return instance;

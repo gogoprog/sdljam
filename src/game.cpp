@@ -6,6 +6,7 @@
 #include "game/control.h"
 #include "game/factory.h"
 #include "game/mode.h"
+#include "game/shake.h"
 #include "game/spawn.h"
 #include "game/sprite.h"
 #include "game/turret.h"
@@ -35,6 +36,7 @@ void Game::init() {
     engine.addSystem(new CameraSystem());
     engine.addSystem(new ControlSystem());
     engine.addSystem(new AnimationSystem());
+    engine.addSystem(new ShakeSystem());
     engine.addSystem(new SpriteRotaterSystem());
     engine.addSystem(new SpriteRendererSystem());
     engine.addSystem(new UiSystem());
@@ -43,6 +45,7 @@ void Game::init() {
     {
         auto e = Factory::createCamera();
         engine.addEntity(e);
+        Context::get().cameraEntity = e;
     }
 
     /* for (int i = 0; i < 10; ++i) { */
@@ -54,12 +57,6 @@ void Game::init() {
     {
         auto e = Factory::createSpawn();
         e->position = level.getTileCenterPosition(level.beginCoords);
-        engine.addEntity(e);
-    }
-
-    {
-        auto e = Factory::createExplosion();
-        e->position = level.getTileCenterPosition({10,10});
         engine.addEntity(e);
     }
 
