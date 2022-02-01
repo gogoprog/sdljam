@@ -1,5 +1,6 @@
 #include "factory.h"
 
+#include "animation.h"
 #include "bullet.h"
 #include "camera.h"
 #include "control.h"
@@ -77,5 +78,29 @@ SharedPtr<Entity> Factory::createSpawn() {
     auto e = std::make_shared<Entity>();
     e->add<Spawn>();
 
+    return e;
+}
+
+SharedPtr<Entity> Factory::createSmallExplosion() {
+    auto e = std::make_shared<Entity>();
+    e->add<Sprite>();
+    e->get<Sprite>().atlasName = "expSmall";
+    e->get<Sprite>().frameIndex = 0;
+    e->get<Sprite>().layer = 2;
+    e->add<Animation>();
+    e->get<Animation>().frameRate = 15;
+    e->get<Animation>().autoRemove = true;
+    return e;
+}
+
+SharedPtr<Entity> Factory::createExplosion() {
+    auto e = std::make_shared<Entity>();
+    e->add<Sprite>();
+    e->get<Sprite>().atlasName = "exploBig";
+    e->get<Sprite>().frameIndex = 0;
+    e->get<Sprite>().layer = 2;
+    e->add<Animation>();
+    e->get<Animation>().frameRate = 15;
+    e->get<Animation>().autoRemove = true;
     return e;
 }

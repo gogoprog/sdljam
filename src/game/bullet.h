@@ -32,7 +32,11 @@ class BulletSystem : public System {
         engine->iterate<Hittable>([&](Entity &other_entity) {
             auto delta = other_entity.position - entity.position;
 
-            if (delta.getSquareLength() < 32 * 32) {
+            if (delta.getSquareLength() < 24 * 24) {
+                auto e = Factory::createSmallExplosion();
+                e->position = entity.position;
+                engine->addEntity(e);
+
                 other_entity.get<Life>().hp -= 1;
                 engine->removeEntity(entity);
 

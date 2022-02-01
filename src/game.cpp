@@ -1,6 +1,7 @@
 #include "game.h"
 
 #include "context.h"
+#include "game/animation.h"
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/factory.h"
@@ -33,6 +34,7 @@ void Game::init() {
     engine.addSystem(new MoveSystem());
     engine.addSystem(new CameraSystem());
     engine.addSystem(new ControlSystem());
+    engine.addSystem(new AnimationSystem());
     engine.addSystem(new SpriteRotaterSystem());
     engine.addSystem(new SpriteRendererSystem());
     engine.addSystem(new UiSystem());
@@ -52,6 +54,12 @@ void Game::init() {
     {
         auto e = Factory::createSpawn();
         e->position = level.getTileCenterPosition(level.beginCoords);
+        engine.addEntity(e);
+    }
+
+    {
+        auto e = Factory::createExplosion();
+        e->position = level.getTileCenterPosition({10,10});
         engine.addEntity(e);
     }
 

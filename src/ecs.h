@@ -59,6 +59,10 @@ class System {
     virtual void onEntityAdded(Entity &entity){};
     virtual void updateSingle(const float dt, Entity &entity){};
 
+    template <typename T> void require() {
+        componentsNames.push_back(T::name);
+    }
+
   protected:
     Vector<String> componentsNames;
     Engine *engine{nullptr};

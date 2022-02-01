@@ -2,6 +2,8 @@
 
 #include "../context.h"
 
+#include "factory.h"
+
 struct Life : public Component {
     inline static String name = "Life";
 
@@ -18,6 +20,10 @@ class LifeSystem : public System {
         auto &life = entity.get<Life>();
 
         if (life.hp <= 0) {
+            auto e = Factory::createExplosion();
+            e->position = entity.position;
+            engine->addEntity(e);
+
             engine->removeEntity(entity);
         }
     }
