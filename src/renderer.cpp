@@ -52,7 +52,8 @@ void Renderer::update() {
     SDL_RenderPresent(pimpl->renderer);
 }
 
-void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
+void Renderer::loadAtlas(const std::string &name, const bool skip_empty, const int delimiter, const bool check_content,
+                         const bool skip1) {
     std::string path;
     path = "res/" + name + ".bmp";
 
@@ -67,7 +68,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
         for (int x = inputx + 1; x < surface->w; ++x) {
             auto v = pixels[inputy * pitch + x];
 
-            if (v == 254)
+            if (v == delimiter)
                 return x;
         }
         return 0;
@@ -77,7 +78,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
         for (int y = inputy + 1; y < surface->h; ++y) {
             auto v = pixels[y * pitch + inputx];
 
-            if (v == 254)
+            if (v == delimiter)
                 return y;
         }
         return 0;
@@ -89,12 +90,15 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
         if (rect.w <= 0 || rect.h <= 0)
             return DEGENERATE;
 
+        if (!check_content)
+            return VALID;
+
         {
             int y = rect.y;
             for (int x = rect.x; x < rect.x + rect.w; ++x) {
                 auto v = pixels[y * pitch + x];
 
-                if (v < 254)
+                if (v < 254 && v != delimiter)
                     return WRONG_UP;
             }
         }
@@ -103,7 +107,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
             for (int y = rect.y; y < rect.y + rect.h; ++y) {
                 auto v = pixels[y * pitch + x];
 
-                if (v < 254)
+                if (v < 254 && v != delimiter)
                     return WRONG_LEFT;
             }
         }
@@ -112,7 +116,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
             for (int x = rect.x; x < rect.x + rect.w; ++x) {
                 auto v = pixels[y * pitch + x];
 
-                if (v < 254)
+                if (v < 254 && v != delimiter)
                     return WRONG_DOWN;
             }
         }
@@ -121,7 +125,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
             for (int y = rect.y; y < rect.y + rect.h; ++y) {
                 auto v = pixels[y * pitch + x];
 
-                if (v < 254)
+                if (v < 254 && v != delimiter)
                     return WRONG_RIGHT;
             }
         }
@@ -130,7 +134,7 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
             for (int x = rect.x; x < rect.x + rect.w; ++x) {
                 auto v = pixels[y * pitch + x];
 
-                if (v < 254)
+                if (v < 254 && v != delimiter)
                     return VALID;
             }
         }
@@ -142,9 +146,15 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty) {
         for (int x = 0; x < surface->w; ++x) {
             auto v = pixels[y * pitch + x];
 
-            if (v == 254) {
+            if (v == delimiter) {
                 pixels[y * pitch + x] = 255;
                 SDL_Rect rect{x, y, x, y};
+
+                if (skip1) {
+                    rect.x++;
+                    rect.y++;
+                }
+
                 rect.w = get_next_x(x, y) - rect.x;
                 rect.h = get_next_y(x, y) - rect.y;
 
