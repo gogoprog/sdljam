@@ -11,7 +11,7 @@ struct Shake : public Component {
     float intensity = 0.3f;
 
     float time{0};
-    Vector2 initialPosition;
+    Vector2 offset;
 };
 
 class ShakeSystem : public System {
@@ -21,8 +21,6 @@ class ShakeSystem : public System {
     }
 
     void onEntityAdded(Entity &entity) override {
-        auto &shake = entity.get<Shake>();
-        shake.initialPosition = entity.position;
     }
 
     void updateSingle(const float dt, Entity &entity) override {
@@ -38,10 +36,9 @@ class ShakeSystem : public System {
         float x = noise(shake.time * 50, 2) * intensity;
         float y = noise(3, shake.time * 50) * intensity;
 
-        entity.position = shake.initialPosition + Vector2{x, y};
+        entity.get<Shake>().offset =  Vector2{x, y};
 
         if (shake.time > shake.duration) {
-            entity.position = shake.initialPosition;
             entity.remove<Shake>();
         }
     }

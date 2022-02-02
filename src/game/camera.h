@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../context.h"
+#include "shake.h"
 
 struct Camera : public Component {
     inline static String name = "Camera";
@@ -26,6 +27,9 @@ class CameraSystem : public System {
         }
 
         entity.position = position;
+        if(entity.has<Shake>()) {
+            position = position + entity.get<Shake>().offset;
+        }
 
         Context::get().renderer.getCameraPosition() = position;
     }
