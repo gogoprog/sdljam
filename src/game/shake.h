@@ -7,8 +7,8 @@
 struct Shake : public Component {
     inline static String name = "Shake";
 
-    float duration = 1.0f;
-    float intensity = 2.0f;
+    float duration = 0.4f;
+    float intensity = 0.3f;
 
     float time{0};
     Vector2 initialPosition;
@@ -30,11 +30,13 @@ class ShakeSystem : public System {
 
         shake.time += dt;
 
-        /* auto intensity = shake.intensity / (shake.time / shake.duration); */
-        auto intensity = shake.intensity;
+        //TODO: This should scale with distance from screen borders as well.
+        //Full force when on screen, linear decay when outside.
+        auto intensity = shake.intensity / (shake.time / shake.duration);
+        // auto intensity = shake.intensity;
 
-        float x = noise(shake.time * 10, 2) * intensity;
-        float y = noise(shake.time * 10, 3) * intensity;
+        float x = noise(shake.time * 50, 2) * intensity;
+        float y = noise(3, shake.time * 50) * intensity;
 
         entity.position = shake.initialPosition + Vector2{x, y};
 
