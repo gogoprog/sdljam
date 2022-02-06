@@ -104,3 +104,16 @@ SharedPtr<Entity> Factory::createExplosion() {
     e->get<Animation>().autoRemove = true;
     return e;
 }
+
+SharedPtr<Entity> Factory::createFlag() {
+    auto e = std::make_shared<Entity>();
+    e->add<Sprite>();
+    e->get<Sprite>().atlasName = "Flag";
+    e->get<Sprite>().frameIndex = 0;
+    e->get<Sprite>().layer = 2;
+    e->add<Animation>();
+    e->get<Animation>().frameRate = 5;
+    e->get<Animation>().autoRemove = false;
+    e->get<Animation>().loop = true;
+    return e;
+}

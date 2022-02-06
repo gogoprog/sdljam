@@ -4,6 +4,14 @@
 
 class Game {
   public:
+    enum class State {
+        INITIATING,
+        PREPARING,
+        PLAYING,
+        WINNING,
+        LOSING,
+    };
+
     enum class Mode {
         FIRING,
         TURRET_BUILDING,

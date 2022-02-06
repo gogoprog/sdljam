@@ -182,6 +182,30 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty, const i
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
 }
 
+void Renderer::loadAtlas(const std::string &name, const int frame_width, const int frame_height, const int max_frames,
+                         const bool skip1) {
+    std::string path;
+    path = "res/" + name + ".bmp";
+
+    Atlas atlas;
+    auto surface = SDL_LoadBMP(path.c_str());
+    atlas.surface = surface;
+
+    int x = 1;
+    int y = 1;
+
+    while (x < surface->w && atlas.frames.size() < max_frames) {
+        atlas.frames.push_back({{x, y, frame_width, frame_height}, {frame_width, frame_height}});
+        x += frame_width;
+    }
+
+    SDL_SetColorKey(surface, true, 255);
+    atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
+
+    pimpl->atlases[name] = atlas;
+    std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
+}
+
 void Renderer::loadTerrain(const std::string &name) {
     std::string path;
     path = "res/" + name + ".bmp";

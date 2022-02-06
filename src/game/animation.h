@@ -29,6 +29,12 @@ class AnimationSystem : public System {
 
         auto duration = frame_count / animation.frameRate;
 
+        if (animation.loop) {
+            while (animation.time > duration) {
+                animation.time -= duration;
+            }
+        }
+
         if (animation.time < duration) {
             int frame = int(animation.time * animation.frameRate) % frame_count;
 

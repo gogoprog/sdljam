@@ -57,13 +57,15 @@ class Renderer {
 
     void loadAtlas(const std::string &name, const bool skip_empty = true, const int delimiter = 254,
                    const bool check_content = true, const bool skip1 = false, const int step = 1);
+    void loadAtlas(const std::string &name, const int frame_width, const int frame_height, const int max_frames, const bool skip1 = true);
     void loadTerrain(const std::string &name);
     void loadTexture(const std::string &name, const bool center_pivot = true);
     void loadFont(const std::string &name);
 
     const Terrain &getTerrain(const std::string &name);
 
-    void draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot = true, const float scale = 1.0f, const bool use_camera = true);
+    void draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot = true,
+              const float scale = 1.0f, const bool use_camera = true);
     void draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot = true);
     void draw(const Vector2 &pos, const Terrain &terrain, const int tileindex);
     void draw(const Vector2 &pos, const std::string &name);

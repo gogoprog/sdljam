@@ -79,7 +79,7 @@ int main(int arc, char **argv) {
         level.render(renderer);
         engine.update(delta_time);
 
-        /* viewer("Font"); */
+        /* viewer("Flag"); */
 
         renderer.drawText({128, 128}, "hello world ! 0123");
 

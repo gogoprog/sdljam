@@ -28,6 +28,7 @@ void loadData(Renderer &renderer) {
     renderer.loadAtlas("exploBig", false, 1, false, true);
     renderer.loadAtlas("expSmall", false, 1, false, true);
     renderer.loadAtlas("explosn", false, 7, false, true, 20);
+    renderer.loadAtlas("Flag", 20, 20, 5);
 
     renderer.loadTerrain("StoneSnow");
     renderer.loadTerrain("SnowPink");

@@ -59,6 +59,20 @@ void Game::init() {
         e->position = level.getTileCenterPosition(level.beginCoords);
         engine.addEntity(e);
     }
+    {
+        auto e = Factory::createFlag();
+        e->position = level.getTileCenterPosition(level.endCoords);
+        e->position.x -= 108;
+        e->position.y += 40;
+        engine.addEntity(e);
+    }
+    {
+        auto e = Factory::createFlag();
+        e->position = level.getTileCenterPosition(level.endCoords);
+        e->position.x += 98;
+        e->position.y += 40;
+        engine.addEntity(e);
+    }
 
     for (int i = 0; i < 10; ++i) {
         Vector2 pos = {rand() % 2048, rand() % 2048};
