@@ -6,17 +6,6 @@
 #include <map>
 #include <vector>
 
-struct Frame {
-    SDL_Rect rect;
-    Vector2 pivot;
-};
-
-struct Atlas {
-    Vector<Frame> frames;
-    SDL_Surface *surface;
-    SDL_Texture *texture;
-};
-
 struct Texture {
     SDL_Rect rect;
     SDL_Texture *texture;
@@ -321,20 +310,34 @@ const Terrain &Renderer::getTerrain(const std::string &name) {
     return pimpl->terrains[name];
 }
 
-void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot) {
-    auto &atlas = pimpl->atlases[name];
+void Renderer::draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot,
+                    const float scale, const bool use_camera) {
     auto &frame = atlas.frames[frameindex];
     auto rect = frame.rect;
     auto drect = rect;
-    drect.x = pos.x - pimpl->cameraPosition.x;
-    drect.y = pos.y - pimpl->cameraPosition.y;
+
+    drect.x = pos.x;
+    drect.y = pos.y;
+
+    if (use_camera) {
+        drect.x -= pimpl->cameraPosition.x;
+        drect.y -= pimpl->cameraPosition.y;
+    }
+
     if (use_pivot) {
         drect.x -= frame.pivot.x;
         drect.y -= frame.pivot.y;
     }
-    drect.w *= 2;
-    drect.h *= 2;
+
+    drect.w *= 2 * scale;
+    drect.h *= 2 * scale;
+
     SDL_RenderCopy(pimpl->renderer, atlas.texture, &rect, &drect);
+}
+
+void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot) {
+    auto &atlas = pimpl->atlases[name];
+    draw(pos, atlas, frameindex, use_pivot);
 }
 
 void Renderer::draw(const Vector2 &pos, const Terrain &terrain, const int tileindex) {
@@ -363,9 +366,28 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
 
 void Renderer::drawText(const Vector2 &pos, const std::string &text) {
     auto &atlas = pimpl->atlases["Font"];
+    auto current_pos = pos;
 
-    for(auto c : text) {
+    for (auto c : text) {
+        int frame_index = -1;
 
+        if (c >= 'a' && c <= 'z') {
+            frame_index = c - 'a';
+        }
+
+        if (c >= '0' && c <= '9') {
+            frame_index = c - '0' + 18 + 26;
+        }
+
+        if (c == ' ') {
+            current_pos.x += 5;
+        }
+
+        if (frame_index != -1) {
+            auto &frame = atlas.frames[frame_index];
+            draw(current_pos, atlas, frame_index, false, 2.0f, false);
+            current_pos.x += 1 + frame.rect.w * 4;
+        }
     }
 }
 

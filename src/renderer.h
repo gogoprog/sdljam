@@ -35,6 +35,17 @@ struct Terrain {
     SDL_Texture *texture;
 };
 
+struct Frame {
+    SDL_Rect rect;
+    Vector2 pivot;
+};
+
+struct Atlas {
+    Vector<Frame> frames;
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+};
+
 class Renderer {
   public:
     Renderer();
@@ -52,6 +63,7 @@ class Renderer {
 
     const Terrain &getTerrain(const std::string &name);
 
+    void draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot = true, const float scale = 1.0f, const bool use_camera = true);
     void draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot = true);
     void draw(const Vector2 &pos, const Terrain &terrain, const int tileindex);
     void draw(const Vector2 &pos, const std::string &name);
