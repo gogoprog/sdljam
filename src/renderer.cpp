@@ -238,6 +238,85 @@ void Renderer::loadTexture(const std::string &name, const bool center_pivot) {
     std::cout << "Loaded texture '" << name << "'" << std::endl;
 }
 
+void Renderer::loadFont(const std::string &name) {
+    std::string path;
+    path = "res/" + name + ".bmp";
+    auto surface = SDL_LoadBMP(path.c_str());
+    Atlas atlas;
+
+    atlas.surface = surface;
+    auto pixels = (uint8_t *)surface->pixels;
+    auto pitch = surface->pitch;
+
+    auto isValid = [&](const int x, const int fromy) {
+        for (int y = fromy; y <= fromy + 10; ++y) {
+            auto v = pixels[y * pitch + x];
+
+            if (v != 36 && v > 0) {
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    auto findNextX = [&](const int fromx, const int y, const int max_x = 0) {
+        auto max = max_x != 0 ? max_x : surface->w;
+
+        for (int x = fromx + 1; x < max; x++) {
+            if (isValid(x, y)) {
+                return x;
+            }
+        }
+
+        return max_x == 0 ? -1 : max_x - 1;
+    };
+
+    auto y = 24;
+
+    for (int x = 7; x < surface->w; x += 1) {
+        auto x2 = findNextX(x, y);
+
+        if (x2 != -1) {
+            SDL_Rect rect = {x, y, x2 - x + 1, 11};
+            atlas.frames.push_back({rect});
+            x = x2 + 1;
+        } else {
+            break;
+        }
+    }
+
+    y = 12;
+
+    auto count = 0;
+
+    for (int x = 195; x < surface->w; x += 1) {
+        auto x2 = findNextX(x, y, x + 6);
+
+        if (x2 != -1) {
+            SDL_Rect rect = {x, y, x2 - x + 1, 9};
+
+            if (rect.w >= 3) {
+                atlas.frames.push_back({rect});
+                ++count;
+                if (count >= 10) {
+                    break;
+                }
+            }
+
+            x = x2;
+        } else {
+            break;
+        }
+    }
+
+    SDL_SetColorKey(surface, true, 36);
+    atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
+
+    pimpl->atlases[name] = atlas;
+    std::cout << "Loaded " << atlas.frames.size() << " frames for font '" << name << "'" << std::endl;
+}
+
 const Terrain &Renderer::getTerrain(const std::string &name) {
     return pimpl->terrains[name];
 }
@@ -280,6 +359,14 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     drect.w *= 2;
     drect.h *= 2;
     SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
+}
+
+void Renderer::drawText(const Vector2 &pos, const std::string &text) {
+    auto &atlas = pimpl->atlases["Font"];
+
+    for(auto c : text) {
+
+    }
 }
 
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {

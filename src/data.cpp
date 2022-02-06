@@ -1,6 +1,8 @@
 #include "renderer.h"
 
 void loadData(Renderer &renderer) {
+    renderer.loadFont("Font");
+
     renderer.loadAtlas("Turret");
     renderer.setPivot("Turret", 0, {43, 21});
     renderer.setPivot("Turret", 1, {43, 21});

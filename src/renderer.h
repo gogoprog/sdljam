@@ -48,11 +48,15 @@ class Renderer {
                    const bool check_content = true, const bool skip1 = false, const int step = 1);
     void loadTerrain(const std::string &name);
     void loadTexture(const std::string &name, const bool center_pivot = true);
+    void loadFont(const std::string &name);
+
     const Terrain &getTerrain(const std::string &name);
 
     void draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot = true);
     void draw(const Vector2 &pos, const Terrain &terrain, const int tileindex);
     void draw(const Vector2 &pos, const std::string &name);
+
+    void drawText(const Vector2 &pos, const std::string &text);
 
     void setPivot(const std::string &name, const int frameindex, const Vector2 &pivot);
     int getFramesCount(const std::string &name) const;

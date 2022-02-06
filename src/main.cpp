@@ -79,7 +79,9 @@ int main(int arc, char **argv) {
         level.render(renderer);
         engine.update(delta_time);
 
-        /* viewer("explosn"); */
+        /* viewer("Font"); */
+
+        renderer.drawText({128, 128}, "hello world ! 0123");
 
         renderer.update();
 
