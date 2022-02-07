@@ -14,11 +14,13 @@ int main(int arc, char **argv) {
 
     Context &context = Context::get();
     auto &renderer = context.renderer;
+    auto &audio = context.audio;
     auto &inputs = context.inputs;
     auto &engine = context.engine;
     auto &level = context.level;
     auto &game = context.game;
 
+    audio.init();
     renderer.init();
 
     loadData(renderer);

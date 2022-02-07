@@ -10,6 +10,7 @@ add_executable(
     src/main.cpp
     src/data.cpp
     src/renderer.cpp
+    src/audio.cpp
     src/level.cpp
     src/game.cpp
     src/game/factory.cpp
