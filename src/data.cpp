@@ -1,6 +1,7 @@
+#include "audio.h"
 #include "renderer.h"
 
-void loadData(Renderer &renderer) {
+void loadData(Renderer &renderer, Audio &audio) {
     renderer.loadFont("Font");
 
     renderer.loadAtlas("Turret");
@@ -35,4 +36,8 @@ void loadData(Renderer &renderer) {
 
     renderer.loadTexture("Panel", false);
     renderer.loadTexture("Cursor1");
+
+    audio.loadSound("firing");
+    audio.loadSound("impact");
+    audio.loadSound("explosion");
 }

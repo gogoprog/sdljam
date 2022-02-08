@@ -40,6 +40,8 @@ class BulletSystem : public System {
                 other_entity.get<Life>().hp -= 1;
                 engine->removeEntity(entity);
 
+                Context::get().audio.playSound("impact");
+
                 return false;
             }
 

@@ -13,7 +13,9 @@ It has only one dependency : SDL.
 
 ### Sounds
 
-?
+ * https://freesound.org/people/qubodup/sounds/168707/
+ * https://freesound.org/people/simonjsounds/sounds/260003/
+ * https://freesound.org/people/derplayer/sounds/587184/
 
 ### Special thanks
 

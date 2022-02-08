@@ -5,12 +5,12 @@
 #include "context.h"
 #include "game.h"
 
-void loadData(Renderer &renderer);
+void loadData(Renderer &renderer, Audio &audio);
 
 int main(int arc, char **argv) {
     bool quit{false};
 
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
     Context &context = Context::get();
     auto &renderer = context.renderer;
@@ -23,7 +23,7 @@ int main(int arc, char **argv) {
     audio.init();
     renderer.init();
 
-    loadData(renderer);
+    loadData(renderer, audio);
 
     auto viewer = [&](const char *atlasname) {
         static int frame = 0;

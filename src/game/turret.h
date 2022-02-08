@@ -38,6 +38,8 @@ class TurretSystem : public System {
             e->position = entity.position + direction * 32;
             Context::get().engine.addEntity(e);
             turret.mustFire = false;
+
+            Context::get().audio.playSound("firing");
         }
 
         turret.timeSinceLastFire += dt;

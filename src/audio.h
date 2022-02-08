@@ -8,8 +8,10 @@ class Audio {
     ~Audio();
 
     void init();
-    void clear();
     void update();
+
+    void loadSound(const String &name);
+    void playSound(const String &name);
 
   private:
     class Pimpl;
