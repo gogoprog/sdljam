@@ -83,7 +83,6 @@ int main(int arc, char **argv) {
 
         /* viewer("Flag"); */
 
-        renderer.drawText({128, 128}, "hello world ! 0123");
 
         renderer.update();
 

@@ -388,7 +388,7 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
 }
 
-void Renderer::drawText(const Vector2 &pos, const std::string &text) {
+void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale) {
     auto &atlas = pimpl->atlases["Font"];
     auto current_pos = pos;
 
@@ -409,8 +409,8 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text) {
 
         if (frame_index != -1) {
             auto &frame = atlas.frames[frame_index];
-            draw(current_pos, atlas, frame_index, false, 2.0f, false);
-            current_pos.x += 1 + frame.rect.w * 4;
+            draw(current_pos, atlas, frame_index, false, scale, false);
+            current_pos.x += 1 + frame.rect.w * 2 * scale;
         }
     }
 }

@@ -7,6 +7,7 @@ class Game {
     enum class State {
         INITIATING,
         PREPARING,
+        BUILDING,
         PLAYING,
         WINNING,
         LOSING,
@@ -23,6 +24,7 @@ class Game {
 
     void init();
     void changeMode(const Mode mode);
+    void changeState(const State state);
 
   private:
     class Pimpl;

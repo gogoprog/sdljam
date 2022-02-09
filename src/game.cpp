@@ -16,6 +16,7 @@
 struct Game::Pimpl {
     FiringModeSystem firingModeSystem;
     RoadBuildingModeSystem roadBuildingModeSystem;
+    SpawnSystem spawnSystem;
 };
 
 Game::Game() : pimpl(new Game::Pimpl()) {
@@ -27,7 +28,6 @@ void Game::init() {
     auto &engine = Context::get().engine;
     auto &level = Context::get().level;
 
-    engine.addSystem(new SpawnSystem());
     engine.addSystem(new TurretSystem());
     engine.addSystem(new VehicleSystem());
     engine.addSystem(new BulletSystem());
@@ -40,7 +40,7 @@ void Game::init() {
     engine.addSystem(new SpriteRotaterSystem());
     engine.addSystem(new SpriteRendererSystem());
     engine.addSystem(new UiSystem());
-    engine.addSystem(new ModeControlSystem());
+    /* engine.addSystem(new ModeControlSystem()); */
 
     {
         auto e = Factory::createCamera();
@@ -90,7 +90,8 @@ void Game::init() {
         }
     }
 
-    changeMode(Mode::FIRING);
+    /* changeMode(Mode::FIRING); */
+    changeState(State::PREPARING);
 }
 
 void Game::changeMode(const Mode mode) {
@@ -107,5 +108,35 @@ void Game::changeMode(const Mode mode) {
             engine.removeSystem(&pimpl->firingModeSystem);
             engine.addSystem(&pimpl->roadBuildingModeSystem);
             break;
+    }
+}
+
+void Game::changeState(const State state) {
+    auto &engine = Context::get().engine;
+
+    switch (state) {
+        case State::INITIATING: {
+
+            changeState(State::PREPARING);
+        } break;
+
+        case State::PREPARING: {
+            engine.addSystem(&pimpl->roadBuildingModeSystem);
+        } break;
+
+        case State::BUILDING: {
+
+        } break;
+
+        case State::PLAYING: {
+            engine.removeSystem(&pimpl->roadBuildingModeSystem);
+            engine.addSystem(&pimpl->spawnSystem);
+        } break;
+
+        case State::WINNING: {
+        } break;
+
+        case State::LOSING: {
+        } break;
     }
 }

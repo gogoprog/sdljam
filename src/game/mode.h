@@ -74,14 +74,15 @@ class RoadBuildingModeSystem : public System {
 
         auto &terrain = renderer.getTerrain("StoneSnow");
 
-        if (inputs.isKeyPressed(SDL_SCANCODE_LCTRL)) {
+        renderer.drawText({128, 128}, "build the path!");
+
+        if (!inputs.isKeyPressed(SDL_SCANCODE_LSHIFT)) {
             if (Context::get().inputs.isMousePressed(1)) {
                 level.setRoad(tile_coords, true);
             }
             renderer.draw(position, terrain, Tile::FILL1);
-        }
+        } else {
 
-        if (inputs.isKeyPressed(SDL_SCANCODE_LSHIFT)) {
             if (Context::get().inputs.isMousePressed(1)) {
                 level.setRoad(tile_coords, false);
             }
