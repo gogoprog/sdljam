@@ -6,24 +6,17 @@ class Game {
   public:
     enum class State {
         INITIATING,
-        PREPARING,
-        BUILDING,
+        BUILDING_ROADS,
+        BUILDING_TURRETS,
         PLAYING,
         WINNING,
         LOSING,
-    };
-
-    enum class Mode {
-        FIRING,
-        TURRET_BUILDING,
-        ROAD_BUILDING,
     };
 
     Game();
     ~Game();
 
     void init();
-    void changeMode(const Mode mode);
     void changeState(const State state);
 
   private:

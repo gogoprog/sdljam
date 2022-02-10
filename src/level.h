@@ -27,6 +27,8 @@ class Level {
     }
 
     void setRoad(const Vector2 &coords, const bool value) {
+        if (locks[coords])
+            return;
         roadmap[coords] = value;
         updateCache({coords.x - 1, coords.y - 1}, {coords.x + 1, coords.y + 1});
     }
@@ -50,7 +52,9 @@ class Level {
   private:
     void buildCache();
     void updateCache(const Vector2 &from, const Vector2 &to);
+    void setLockedRoad(const Vector2 &coords);
 
     Map<Vector2, bool> roadmap;
+    Map<Vector2, bool> locks;
     Vector<int> cachedTypes;
 };

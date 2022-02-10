@@ -2,7 +2,7 @@
 #include <queue>
 
 Level::Level() {
-    tilewidth = 64;
+    tilewidth = 48;
     tileheight = 64;
 
     width = tilewidth * tileSpacing;
@@ -10,19 +10,14 @@ Level::Level() {
 
     buildCache();
 
-    for (int i = 0; i < 50; ++i) {
-        setRoad({20, i}, true);
-    }
-
-    for (int i = 20; i < 64; ++i) {
-        setRoad({i, 50}, true);
-    }
-
-    beginCoords = {64, 50};
+    beginCoords = {20, 64};
+    beginCoords = {20, 20}; // if you read this I want to tell you this line is for debug purpose only
     endCoords = {20, -1};
 
-    setRoad(beginCoords, true);
-    setRoad(endCoords, true);
+    setLockedRoad(beginCoords);
+    setLockedRoad({beginCoords.x, beginCoords.y - 1});
+    setLockedRoad(endCoords);
+    setLockedRoad({endCoords.x, endCoords.y + 1});
 }
 
 void Level::render(Renderer &renderer) {
@@ -146,4 +141,9 @@ void Level::updateCache(const Vector2 &from, const Vector2 &to) {
             cachedTypes[y * tilewidth + x] = type;
         }
     }
+}
+
+void Level::setLockedRoad(const Vector2 &coords) {
+    setRoad(coords, true);
+    locks[coords] = true;
 }

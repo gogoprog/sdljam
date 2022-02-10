@@ -5,17 +5,17 @@
 #include "game/camera.h"
 #include "game/control.h"
 #include "game/factory.h"
-#include "game/mode.h"
 #include "game/shake.h"
 #include "game/spawn.h"
 #include "game/sprite.h"
+#include "game/state.h"
 #include "game/turret.h"
 #include "game/ui.h"
 #include "game/vehicle.h"
 
 struct Game::Pimpl {
-    FiringModeSystem firingModeSystem;
-    RoadBuildingModeSystem roadBuildingModeSystem;
+    FiringStateSystem firingStateSystem;
+    RoadBuildingStateSystem roadBuildingStateSystem;
     SpawnSystem spawnSystem;
 };
 
@@ -40,7 +40,6 @@ void Game::init() {
     engine.addSystem(new SpriteRotaterSystem());
     engine.addSystem(new SpriteRendererSystem());
     engine.addSystem(new UiSystem());
-    /* engine.addSystem(new ModeControlSystem()); */
 
     {
         auto e = Factory::createCamera();
@@ -73,6 +72,20 @@ void Game::init() {
         e->position.y += 40;
         engine.addEntity(e);
     }
+    {
+        auto e = Factory::createFlag();
+        e->position = level.getTileCenterPosition(level.beginCoords);
+        e->position.x += 98;
+        e->position.y -= 40;
+        engine.addEntity(e);
+    }
+    {
+        auto e = Factory::createFlag();
+        e->position = level.getTileCenterPosition(level.beginCoords);
+        e->position.x -= 108;
+        e->position.y -= 40;
+        engine.addEntity(e);
+    }
 
     for (int i = 0; i < 10; ++i) {
         Vector2 pos = {rand() % 2048, rand() % 2048};
@@ -90,25 +103,7 @@ void Game::init() {
         }
     }
 
-    /* changeMode(Mode::FIRING); */
-    changeState(State::PREPARING);
-}
-
-void Game::changeMode(const Mode mode) {
-    auto &engine = Context::get().engine;
-
-    switch (mode) {
-        case Mode::FIRING:
-            engine.removeSystem(&pimpl->roadBuildingModeSystem);
-            engine.addSystem(&pimpl->firingModeSystem);
-            break;
-        case Mode::TURRET_BUILDING:
-            break;
-        case Mode::ROAD_BUILDING:
-            engine.removeSystem(&pimpl->firingModeSystem);
-            engine.addSystem(&pimpl->roadBuildingModeSystem);
-            break;
-    }
+    changeState(State::INITIATING);
 }
 
 void Game::changeState(const State state) {
@@ -117,19 +112,20 @@ void Game::changeState(const State state) {
     switch (state) {
         case State::INITIATING: {
 
-            changeState(State::PREPARING);
+            changeState(State::BUILDING_ROADS);
         } break;
 
-        case State::PREPARING: {
-            engine.addSystem(&pimpl->roadBuildingModeSystem);
+        case State::BUILDING_ROADS: {
+            engine.addSystem(&pimpl->roadBuildingStateSystem);
         } break;
 
-        case State::BUILDING: {
-
+        case State::BUILDING_TURRETS: {
+            engine.removeSystem(&pimpl->roadBuildingStateSystem);
+            /* engine.addSystem(&pimpl->roadBuildingStateSystem); */
         } break;
 
         case State::PLAYING: {
-            engine.removeSystem(&pimpl->roadBuildingModeSystem);
+            engine.removeSystem(&pimpl->roadBuildingStateSystem);
             engine.addSystem(&pimpl->spawnSystem);
         } break;
 
