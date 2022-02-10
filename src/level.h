@@ -11,9 +11,9 @@ class Level {
 
     Level();
 
-    inline Vector2 getTileCoords(const Vector2 world_pos) const {
-        int col = int(world_pos.x / tileSpacing);
-        int row = int(world_pos.y / tileSpacing);
+    inline Vector2 getTileCoords(const Vector2 &world_pos) const {
+        int col = int(std::floor(world_pos.x / tileSpacing));
+        int row = int(std::floor(world_pos.y / tileSpacing));
 
         return Vector2(col, row);
     }
@@ -33,6 +33,17 @@ class Level {
         updateCache({coords.x - 1, coords.y - 1}, {coords.x + 1, coords.y + 1});
     }
 
+    void lock(const Vector2 &coords) {
+        locks[coords] = true;
+    }
+
+    void lock2x2(const Vector2 &coords) {
+        locks[coords] = true;
+        locks[{coords.x - 1, coords.y}] = true;
+        locks[{coords.x - 1, coords.y - 1}] = true;
+        locks[{coords.x, coords.y - 1}] = true;
+    }
+
     bool getRoad(const Vector2 &coords) {
         return roadmap[coords];
     }
@@ -40,6 +51,9 @@ class Level {
     void render(Renderer &renderer);
 
     bool findPath(Path &path, const Vector2 &start, const Vector2 &end);
+
+    bool isFree(const Vector2 &coords);
+    bool canBuildAt(const Vector2 &coords);
 
     int width;
     int height;

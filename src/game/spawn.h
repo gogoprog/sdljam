@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../context.h"
-#include "move.h"
 #include "factory.h"
+#include "move.h"
+#include "vehicle.h"
 
 struct Spawn : public Component {
     inline static String name = "Spawn";
@@ -17,6 +18,8 @@ class SpawnSystem : public System {
     }
 
     void updateSingle(const float dt, Entity &entity) override {
+        auto &game = Context::get().game;
+        auto &wave = game.currentWave;
 
         auto &spawn = entity.get<Spawn>();
 
@@ -24,9 +27,23 @@ class SpawnSystem : public System {
 
         if (spawn.timeSinceLastSpawn > 1.0) {
 
-            auto e = Factory::createVehicle();
-            e->position = entity.position;
-            engine->addEntity(e);
+            if (wave.units > 0) {
+                auto e = Factory::createVehicle();
+                e->position = entity.position;
+                engine->addEntity(e);
+                wave.units--;
+            } else {
+                auto count = 0;
+
+                engine->iterate<Vehicle>([&](auto &e) {
+                    ++count;
+                    return true;
+                });
+
+                if (!count) {
+                    game.changeState(Game::State::WINNING);
+                }
+            }
 
             spawn.timeSinceLastSpawn = 0;
         }

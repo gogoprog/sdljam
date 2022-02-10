@@ -22,6 +22,7 @@ class VehicleSystem : public System {
 
     void updateSingle(const float dt, Entity &entity) override {
         auto &level = Context::get().level;
+        auto &game = Context::get().game;
         auto &vehicle = entity.get<Vehicle>();
 
         if (!entity.has<Move>()) {
@@ -30,14 +31,25 @@ class VehicleSystem : public System {
 
             auto start_coords = level.getTileCoords(entity.position);
 
-            if (level.findPath(vehicle.path, start_coords, level.endCoords)) {
-                if (vehicle.path.size() > 1) {
-                    auto position = level.getTileCenterPosition(vehicle.path[1]);
+            if (start_coords == level.endCoords) {
+                game.stats.lifes--;
+
+                if (game.stats.lifes == 0) {
+                    game.changeState(Game::State::LOSING);
+                }
+
+                engine->removeEntity(entity);
+            } else {
+                if (level.findPath(vehicle.path, start_coords, level.endCoords)) {
+                    if (vehicle.path.size() > 1) {
+                        auto position = level.getTileCenterPosition(vehicle.path[1]);
+                        entity.add<Move>(entity.position, position, vehicle.speed);
+                    } else if (vehicle.path.size() == 0) {
+                    }
+                } else {
+                    auto position = level.getTileCenterPosition(start_coords + directions[rand() % 8]);
                     entity.add<Move>(entity.position, position, vehicle.speed);
                 }
-            } else {
-                auto position = level.getTileCenterPosition(start_coords + directions[rand() % 8]);
-                entity.add<Move>(entity.position, position, vehicle.speed);
             }
         }
 

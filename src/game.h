@@ -6,6 +6,11 @@ struct Wave {
     int units;
 };
 
+struct Stats {
+    int lifes;
+    int money;
+};
+
 class Game {
   public:
     enum class State {
@@ -21,9 +26,13 @@ class Game {
     ~Game();
 
     void init();
+    void reset();
     void changeState(const State state);
-
     void nextWave();
+
+    Stats stats;
+    Wave currentWave;
+    int waveCount{0};
 
   private:
     class Pimpl;

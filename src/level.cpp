@@ -82,6 +82,28 @@ bool Level::findPath(Path &path, const Vector2 &start, const Vector2 &end) {
     return false;
 }
 
+bool Level::isFree(const Vector2 &coords) {
+    return (!roadmap[coords] && !locks[coords]);
+}
+
+bool Level::canBuildAt(const Vector2 &coords) {
+
+    if (!isFree(coords)) {
+        return false;
+    }
+    if (!isFree({coords.x, coords.y - 1})) {
+        return false;
+    }
+    if (!isFree({coords.x - 1, coords.y - 1})) {
+        return false;
+    }
+    if (!isFree({coords.x - 1, coords.y})) {
+        return false;
+    }
+
+    return true;
+}
+
 void Level::buildCache() {
     cachedTypes.resize(tilewidth * tileheight);
     updateCache({0, 0}, {tilewidth - 1, tileheight - 1});

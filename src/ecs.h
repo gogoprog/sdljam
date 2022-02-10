@@ -66,6 +66,7 @@ class System {
   protected:
     Vector<String> componentsNames;
     Engine *engine{nullptr};
+    int priority{0};
 };
 
 class Engine {
@@ -76,6 +77,8 @@ class Engine {
         auto it = std::find(systems.begin(), systems.end(), system);
         if (it == systems.end()) {
             systems.push_back(system);
+
+            std::sort(systems.begin(), systems.end(), [&](auto a, auto b) { return a->priority < b->priority; });
             system->engine = this;
             system->onAdded();
         }
@@ -137,6 +140,14 @@ class Engine {
                 }
             }
         }
+    }
+
+    void removeAllEntities() {
+        entities.clear();
+    }
+
+    void removeAllSystems() {
+        systems.clear();
     }
 
   private:

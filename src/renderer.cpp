@@ -352,6 +352,10 @@ const Terrain &Renderer::getTerrain(const std::string &name) {
     return pimpl->terrains[name];
 }
 
+const Atlas &Renderer::getAtlas(const std::string &name) {
+    return pimpl->atlases[name];
+}
+
 void Renderer::draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot,
                     const float scale, const bool use_camera) {
     auto &frame = atlas.frames[frameindex];
@@ -406,46 +410,49 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
 }
 
-void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale) {
+void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale, const bool background) {
     auto &atlas = pimpl->atlases["Font"];
     auto current_pos = pos;
 
-    for (auto c : text) {
-        int frame_index = pimpl->getTextFrameIndex(c);
+    if (background) {
 
-        if (c == ' ') {
-            current_pos.x += 5;
+        for (auto c : text) {
+            int frame_index = pimpl->getTextFrameIndex(c);
+
+            if (c == ' ') {
+                current_pos.x += 5 * scale;
+            }
+
+            if (frame_index != -1) {
+                auto &frame = atlas.frames[frame_index];
+                current_pos.x += 1 * scale + frame.rect.w * 2 * scale;
+            }
         }
 
-        if (frame_index != -1) {
-            auto &frame = atlas.frames[frame_index];
-            current_pos.x += 1 + frame.rect.w * 2 * scale;
-        }
+        auto width = current_pos.x - pos.x;
+        SDL_Rect rect;
+        rect.w = width + 10;
+        rect.h = 32 * scale;
+        rect.x = pos.x - 5;
+        rect.y = pos.y - 5;
+
+        SDL_SetRenderDrawColor(pimpl->renderer, 0, 0, 0, 128);
+        SDL_RenderFillRect(pimpl->renderer, &rect);
+
+        current_pos = pos;
     }
 
-    auto width = current_pos.x - pos.x;
-    SDL_Rect rect;
-    rect.w = width + 10;
-    rect.h = 32;
-    rect.x = pos.x - 5;
-    rect.y = pos.y - 5;
-
-    SDL_SetRenderDrawColor(pimpl->renderer, 0, 0, 0, 128);
-    SDL_RenderFillRect(pimpl->renderer, &rect);
-
-    current_pos = pos;
-
     for (auto c : text) {
         int frame_index = pimpl->getTextFrameIndex(c);
 
         if (c == ' ') {
-            current_pos.x += 5;
+            current_pos.x += 5 * scale;
         }
 
         if (frame_index != -1) {
             auto &frame = atlas.frames[frame_index];
             draw(current_pos, atlas, frame_index, false, scale, false);
-            current_pos.x += 1 + frame.rect.w * 2 * scale;
+            current_pos.x += 1 * scale + frame.rect.w * 2 * scale;
         }
     }
 }

@@ -18,6 +18,8 @@ struct Game::Pimpl {
     RoadBuildingStateSystem roadBuildingStateSystem;
     BuildingTurretsStateSystem buildingTurretsStateSystem;
     SpawnSystem spawnSystem;
+    WinningStateSystem winningStateSystem;
+    LosingStateSystem losingStateSystem;
 };
 
 Game::Game() : pimpl(new Game::Pimpl()) {
@@ -47,13 +49,6 @@ void Game::init() {
         engine.addEntity(e);
         Context::get().cameraEntity = e;
     }
-
-    /* for (int i = 0; i < 10; ++i) { */
-    /*     auto e = Factory::createVehicle(); */
-    /*     e->position = {128, 256}; */
-    /*     engine.addEntity(e); */
-    /* } */
-
     {
         auto e = Factory::createSpawn();
         e->position = level.getTileCenterPosition(level.beginCoords);
@@ -88,23 +83,40 @@ void Game::init() {
         engine.addEntity(e);
     }
 
-    for (int i = 0; i < 10; ++i) {
-        Vector2 pos = {rand() % 2048, rand() % 2048};
+    if (0)
+        for (int i = 0; i < 10; ++i) {
+            Vector2 pos = {rand() % 2048, rand() % 2048};
 
-        {
-            auto e = Factory::createBase();
-            e->position = pos;
-            engine.addEntity(e);
+            {
+                auto e = Factory::createBase();
+                e->position = pos;
+                engine.addEntity(e);
+            }
+
+            {
+                auto e = Factory::createTurret();
+                e->position = pos;
+                engine.addEntity(e);
+            }
         }
 
-        {
-            auto e = Factory::createTurret();
-            e->position = pos;
-            engine.addEntity(e);
-        }
-    }
-
+    stats.lifes = 25;
+    stats.money = 1000;
+    nextWave();
     changeState(State::INITIATING);
+}
+
+void Game::reset() {
+    auto &level = Context::get().level;
+    auto &engine = Context::get().engine;
+    level = Level();
+
+    engine.removeAllEntities();
+    engine.removeAllSystems();
+
+    waveCount = 0;
+
+    init();
 }
 
 void Game::changeState(const State state) {
@@ -116,6 +128,8 @@ void Game::changeState(const State state) {
         } break;
 
         case State::BUILDING_ROADS: {
+            engine.removeSystem(&pimpl->winningStateSystem);
+            engine.removeSystem(&pimpl->buildingTurretsStateSystem);
             engine.addSystem(&pimpl->roadBuildingStateSystem);
         } break;
 
@@ -132,12 +146,21 @@ void Game::changeState(const State state) {
         } break;
 
         case State::WINNING: {
+            engine.removeSystem(&pimpl->spawnSystem);
+            engine.removeSystem(&pimpl->firingStateSystem);
+            engine.addSystem(&pimpl->winningStateSystem);
         } break;
 
         case State::LOSING: {
+            engine.removeSystem(&pimpl->spawnSystem);
+            engine.removeSystem(&pimpl->firingStateSystem);
+            engine.addSystem(&pimpl->losingStateSystem);
         } break;
     }
 }
 
 void Game::nextWave() {
+    currentWave.units = (waveCount + 1) * 2;
+
+    waveCount++;
 }
