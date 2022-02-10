@@ -19,6 +19,23 @@ struct Renderer::Pimpl {
     std::map<String, Terrain> terrains;
     std::map<String, Texture> textures;
     Vector2 cameraPosition{0, 0};
+
+    int getTextFrameIndex(const char c) {
+
+        int frame_index = -1;
+
+        if (c >= 'a' && c <= 'z') {
+            frame_index = c - 'a';
+        }
+
+        if (c >= '1' && c <= '9') {
+            frame_index = c - '0' + 18 + 26 - 1;
+        } else if (c == '0') {
+            frame_index = c - '0' + 18 + 26 - 1 + 10;
+        }
+
+        return frame_index;
+    }
 };
 
 Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
@@ -31,6 +48,7 @@ void Renderer::init() {
     height = 800;
     SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
     SDL_SetWindowTitle(pimpl->window, "hardvacuum-defense");
+    SDL_SetRenderDrawBlendMode(pimpl->renderer, SDL_BLENDMODE_BLEND);
 }
 
 void Renderer::clear() {
@@ -393,15 +411,32 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
     auto current_pos = pos;
 
     for (auto c : text) {
-        int frame_index = -1;
+        int frame_index = pimpl->getTextFrameIndex(c);
 
-        if (c >= 'a' && c <= 'z') {
-            frame_index = c - 'a';
+        if (c == ' ') {
+            current_pos.x += 5;
         }
 
-        if (c >= '0' && c <= '9') {
-            frame_index = c - '0' + 18 + 26;
+        if (frame_index != -1) {
+            auto &frame = atlas.frames[frame_index];
+            current_pos.x += 1 + frame.rect.w * 2 * scale;
         }
+    }
+
+    auto width = current_pos.x - pos.x;
+    SDL_Rect rect;
+    rect.w = width + 10;
+    rect.h = 32;
+    rect.x = pos.x - 5;
+    rect.y = pos.y - 5;
+
+    SDL_SetRenderDrawColor(pimpl->renderer, 0, 0, 0, 128);
+    SDL_RenderFillRect(pimpl->renderer, &rect);
+
+    current_pos = pos;
+
+    for (auto c : text) {
+        int frame_index = pimpl->getTextFrameIndex(c);
 
         if (c == ' ') {
             current_pos.x += 5;

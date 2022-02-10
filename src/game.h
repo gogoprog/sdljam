@@ -2,6 +2,10 @@
 
 #include "types.h"
 
+struct Wave {
+    int units;
+};
+
 class Game {
   public:
     enum class State {
@@ -18,6 +22,8 @@ class Game {
 
     void init();
     void changeState(const State state);
+
+    void nextWave();
 
   private:
     class Pimpl;

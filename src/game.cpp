@@ -16,6 +16,7 @@
 struct Game::Pimpl {
     FiringStateSystem firingStateSystem;
     RoadBuildingStateSystem roadBuildingStateSystem;
+    BuildingTurretsStateSystem buildingTurretsStateSystem;
     SpawnSystem spawnSystem;
 };
 
@@ -111,7 +112,6 @@ void Game::changeState(const State state) {
 
     switch (state) {
         case State::INITIATING: {
-
             changeState(State::BUILDING_ROADS);
         } break;
 
@@ -121,12 +121,14 @@ void Game::changeState(const State state) {
 
         case State::BUILDING_TURRETS: {
             engine.removeSystem(&pimpl->roadBuildingStateSystem);
-            /* engine.addSystem(&pimpl->roadBuildingStateSystem); */
+            engine.addSystem(&pimpl->buildingTurretsStateSystem);
         } break;
 
         case State::PLAYING: {
             engine.removeSystem(&pimpl->roadBuildingStateSystem);
+            engine.removeSystem(&pimpl->buildingTurretsStateSystem);
             engine.addSystem(&pimpl->spawnSystem);
+            engine.addSystem(&pimpl->firingStateSystem);
         } break;
 
         case State::WINNING: {
@@ -135,4 +137,7 @@ void Game::changeState(const State state) {
         case State::LOSING: {
         } break;
     }
+}
+
+void Game::nextWave() {
 }

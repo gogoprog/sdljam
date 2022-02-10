@@ -81,3 +81,68 @@ class RoadBuildingStateSystem : public System {
   private:
     SharedPtr<Entity> preview;
 };
+
+class BuildingTurretsStateSystem : public System {
+  public:
+    BuildingTurretsStateSystem() {
+    }
+
+    void onAdded() override {
+        timeLeft = 25;
+    }
+
+    void update(const float dt) override {
+        auto &inputs = Context::get().inputs;
+        auto &level = Context::get().level;
+        auto &renderer = Context::get().renderer;
+        auto world_position = Context::get().getMouseWorldPosition();
+
+        auto tile_coords = level.getTileCoords(world_position);
+        auto position = level.getTilePosition(tile_coords);
+
+        renderer.drawText({128, 28}, "step 2:", 1);
+        renderer.drawText({128, 70}, "build or upgrade the turrets", 1);
+
+        timeLeft -= dt;
+
+        if (timeLeft < 0 || inputs.isKeyJustPressed(SDL_SCANCODE_SPACE)) {
+            Context::get().game.changeState(Game::State::PLAYING);
+        } else {
+            String msg;
+            msg = "next wave in ";
+            msg += std::to_string(int(timeLeft));
+            msg += "s";
+            renderer.drawText({128, 256}, msg.c_str(), 1);
+        }
+    }
+
+  private:
+    SharedPtr<Entity> preview;
+    float timeLeft;
+};
+
+class WinningStateSystem : public System {
+  public:
+    WinningStateSystem() {
+    }
+
+    void onAdded() override {
+        timeLeft = 2;
+    }
+
+    void update(const float dt) override {
+        auto &inputs = Context::get().inputs;
+        auto &level = Context::get().level;
+        auto &renderer = Context::get().renderer;
+        auto world_position = Context::get().getMouseWorldPosition();
+
+        timeLeft -= dt;
+        if (timeLeft < 0) {
+            Context::get().game.nextWave();
+            Context::get().game.changeState(Game::State::BUILDING_ROADS);
+        }
+    }
+
+  private:
+    float timeLeft;
+};
