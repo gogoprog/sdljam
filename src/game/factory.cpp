@@ -115,5 +115,6 @@ SharedPtr<Entity> Factory::createFlag() {
     e->get<Animation>().frameRate = 5;
     e->get<Animation>().autoRemove = false;
     e->get<Animation>().loop = true;
+    e->add<Flag>();
     return e;
 }

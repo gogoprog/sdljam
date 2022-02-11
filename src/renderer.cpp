@@ -484,6 +484,18 @@ void Renderer::drawCenteredText(const int y, const std::string &text, const floa
     drawText(pos, text, scale, background, false);
 }
 
+void Renderer::drawFilledQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
+    SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
+    SDL_Rect rect = {pos.x, pos.y, size.x, size.y};
+    SDL_RenderFillRect(pimpl->renderer, &rect);
+}
+
+void Renderer::drawQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
+    SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
+    SDL_Rect rect = {pos.x, pos.y, size.x, size.y};
+    SDL_RenderDrawRect(pimpl->renderer, &rect);
+}
+
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {
     auto &atlas = pimpl->atlases[name];
     auto &frame = atlas.frames[frameindex];

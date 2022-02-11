@@ -5,6 +5,10 @@
 #include "move.h"
 #include "vehicle.h"
 
+struct Flag : public Component {
+    inline static String name = "Flag";
+};
+
 struct Spawn : public Component {
     inline static String name = "Spawn";
 

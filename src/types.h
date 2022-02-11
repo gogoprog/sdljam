@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cmath>
 #include <map>
 #include <memory>
@@ -7,7 +8,6 @@
 #include <span>
 #include <string>
 #include <vector>
-#include <array>
 
 using String = std::string;
 template <typename T> using Vector = std::vector<T>;
@@ -54,6 +54,10 @@ inline Vector2 operator-(const Vector2 &v1, const Vector2 &v2) {
 
 inline Vector2 operator*(const Vector2 &v1, const float v) {
     return {v1.x * v, v1.y * v};
+}
+
+inline Vector2 operator/(const Vector2 &v1, const float v) {
+    return {v1.x / v, v1.y / v};
 }
 
 inline bool operator<(const Vector2 &v1, const Vector2 &v2) {
