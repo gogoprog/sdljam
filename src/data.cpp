@@ -1,5 +1,8 @@
 #include "audio.h"
+#include "game/turret.h"
 #include "renderer.h"
+
+Array<TurretStat, 10> turretStats;
 
 void loadData(Renderer &renderer, Audio &audio) {
     renderer.loadFont("Font");
@@ -40,4 +43,44 @@ void loadData(Renderer &renderer, Audio &audio) {
     audio.loadSound("firing");
     audio.loadSound("impact");
     audio.loadSound("explosion");
+
+    turretStats[0].range = 300;
+    turretStats[0].damage = 50;
+    turretStats[0].interval = 1;
+
+    turretStats[1].range = 310;
+    turretStats[1].damage = 60;
+    turretStats[1].interval = 0.8;
+
+    turretStats[2].range = 310;
+    turretStats[2].damage = 60;
+    turretStats[2].interval = 0.7;
+
+    turretStats[3].range = 350;
+    turretStats[3].damage = 70;
+    turretStats[3].interval = 0.6;
+
+    turretStats[4].range = 360;
+    turretStats[4].damage = 75;
+    turretStats[4].interval = 0.5;
+
+    turretStats[5].range = 400;
+    turretStats[5].damage = 75;
+    turretStats[5].interval = 0.4;
+
+    turretStats[6].range = 400;
+    turretStats[6].damage = 75;
+    turretStats[6].interval = 0.3;
+
+    turretStats[7].range = 400;
+    turretStats[7].damage = 75;
+    turretStats[7].interval = 0.2;
+
+    turretStats[8].range = 450;
+    turretStats[8].damage = 80;
+    turretStats[8].interval = 0.15;
+
+    turretStats[9].range = 500;
+    turretStats[9].damage = 100;
+    turretStats[9].interval = 0.1;
 }

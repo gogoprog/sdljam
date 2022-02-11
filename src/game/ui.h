@@ -28,5 +28,11 @@ class UiSystem : public System {
             renderer.drawText({renderer.width - 130, 188 + 150}, "lifes", 1, false);
             renderer.drawText({renderer.width - 130, 215 + 150}, buffer, 1, false);
         }
+        {
+            char buffer[64];
+            sprintf(buffer, "%15d", game.waveCount);
+            renderer.drawText({renderer.width - 130, 188 + 285}, "wave", 1, false);
+            renderer.drawText({renderer.width - 130, 215 + 285}, buffer, 1, false);
+        }
     }
 };

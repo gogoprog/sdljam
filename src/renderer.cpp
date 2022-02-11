@@ -21,17 +21,23 @@ struct Renderer::Pimpl {
     Vector2 cameraPosition{0, 0};
 
     int getTextFrameIndex(const char c) {
-
         int frame_index = -1;
 
         if (c >= 'a' && c <= 'z') {
             frame_index = c - 'a';
-        }
-
-        if (c >= '1' && c <= '9') {
+        } else if (c >= '1' && c <= '9') {
             frame_index = c - '0' + 18 + 26 - 1;
         } else if (c == '0') {
             frame_index = c - '0' + 18 + 26 - 1 + 10;
+        } else {
+            switch (c) {
+                case '!':
+                    frame_index = 27;
+                    break;
+                case ':':
+                    frame_index = 36;
+                    break;
+            }
         }
 
         return frame_index;
@@ -410,7 +416,8 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
 }
 
-void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale, const bool background) {
+void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale, const bool background,
+                        const bool use_camera) {
     auto &atlas = pimpl->atlases["Font"];
     auto current_pos = pos;
 
@@ -436,6 +443,11 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
         rect.x = pos.x - 5;
         rect.y = pos.y - 5;
 
+        if (use_camera) {
+            rect.x -= pimpl->cameraPosition.x;
+            rect.y -= pimpl->cameraPosition.y;
+        }
+
         SDL_SetRenderDrawColor(pimpl->renderer, 0, 0, 0, 128);
         SDL_RenderFillRect(pimpl->renderer, &rect);
 
@@ -451,7 +463,7 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
 
         if (frame_index != -1) {
             auto &frame = atlas.frames[frame_index];
-            draw(current_pos, atlas, frame_index, false, scale, false);
+            draw(current_pos, atlas, frame_index, false, scale, use_camera);
             current_pos.x += 1 * scale + frame.rect.w * 2 * scale;
         }
     }

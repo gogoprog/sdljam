@@ -4,6 +4,8 @@
 
 struct Wave {
     int units;
+    int speed;
+    int hp;
 };
 
 struct Stats {

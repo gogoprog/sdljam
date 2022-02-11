@@ -31,6 +31,10 @@ class SpawnSystem : public System {
                 auto e = Factory::createVehicle();
                 e->position = entity.position;
                 engine->addEntity(e);
+
+                e->get<Vehicle>().speed = wave.speed;
+                e->get<Life>().hp = wave.hp;
+
                 wave.units--;
             } else {
                 auto count = 0;

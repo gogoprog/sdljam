@@ -8,7 +8,8 @@
 struct Bullet : public Component {
     inline static String name = "Bullet";
     Vector2 velocity;
-    float lifetime{0};
+    float lifetimeLeft{0};
+    int damage;
 };
 
 class BulletSystem : public System {
@@ -22,9 +23,9 @@ class BulletSystem : public System {
 
         entity.position = entity.position + bullet.velocity * dt;
 
-        bullet.lifetime += dt;
+        bullet.lifetimeLeft -= dt;
 
-        if (bullet.lifetime > 5.0) {
+        if (bullet.lifetimeLeft < 0.0) {
             engine->removeEntity(entity);
             return;
         }
@@ -37,7 +38,7 @@ class BulletSystem : public System {
                 e->position = entity.position;
                 engine->addEntity(e);
 
-                other_entity.get<Life>().hp -= 1;
+                other_entity.get<Life>().hp -= bullet.damage;
                 engine->removeEntity(entity);
 
                 Context::get().audio.playSound("impact");

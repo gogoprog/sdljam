@@ -11,6 +11,10 @@ class FiringStateSystem : public System {
         componentsNames.push_back("RotatableSprite");
     }
 
+    void onAdded() {
+        time = 0;
+    }
+
     void update(const float dt) override {
         System::update(dt);
 
@@ -18,9 +22,16 @@ class FiringStateSystem : public System {
         auto &renderer = Context::get().renderer;
         auto &mouse_position = inputs.getMousePosition();
 
+        time += dt;
+
         if (mouse_position.x > renderer.width - 160) {
         } else {
             renderer.draw(inputs.getMousePosition(), "Cursor1");
+        }
+
+        if (time < 2.0) {
+            renderer.drawText({128, 28}, "step 3:", 1);
+            renderer.drawText({128, 70}, "fight!", 1);
         }
     }
 
@@ -38,6 +49,9 @@ class FiringStateSystem : public System {
             rotatable.angle = (std::atan2(delta.y, delta.x) * 180.0f / std::numbers::pi) + 90;
         }
     }
+
+  private:
+    float time;
 };
 
 class RoadBuildingStateSystem : public System {
@@ -74,7 +88,7 @@ class RoadBuildingStateSystem : public System {
         }
 
         renderer.drawText({128, 28}, "step 1:", 1);
-        renderer.drawText({128, 70}, "connect the roads", 1);
+        renderer.drawText({128, 70}, "connect the roads!", 1);
 
         timeLeft -= dt;
 
@@ -83,7 +97,7 @@ class RoadBuildingStateSystem : public System {
 
         if (correct) {
             String msg;
-            msg = "good. starting in ";
+            msg = "good! starting in ";
             msg += std::to_string(int(timeLeft));
             msg += "s";
             renderer.drawText({128, 256}, msg.c_str(), 1);
@@ -153,6 +167,39 @@ class BuildingTurretsStateSystem : public System {
                         game.stats.money -= 400;
                     }
                 }
+            } else {
+                Entity *hover_entity{nullptr};
+
+                engine->iterate<Turret>([&](auto &e) {
+                    auto delta = e.position - Vector2{position.x + 32, position.y + 32};
+                    auto length = delta.getLength();
+
+                    if (length < 64) {
+                        hover_entity = &e;
+                    }
+
+                    return true;
+                });
+
+                if (hover_entity != nullptr) {
+                    auto pos = inputs.getMousePosition();
+                    pos.y += 32;
+                    renderer.drawText(pos, "upgrade");
+
+                    if (inputs.isMouseJustPressed(1)) {
+                        auto &turret = hover_entity->get<Turret>();
+
+                        if (turret.level < 9) {
+                            auto cost = 200 + turret.level * 100;
+                            if (game.stats.money >= cost) {
+
+                                game.stats.money -= cost;
+
+                                turret.level++;
+                            }
+                        }
+                    }
+                }
             }
         }
         renderer.drawText({128, 28}, "step 2:", 1);
@@ -169,7 +216,7 @@ class WinningStateSystem : public System {
     }
 
     void onAdded() override {
-        timeLeft = 2;
+        timeLeft = 4;
     }
 
     void update(const float dt) override {
@@ -177,9 +224,14 @@ class WinningStateSystem : public System {
         auto &level = Context::get().level;
         auto &renderer = Context::get().renderer;
 
-        renderer.drawText({256, 256}, "mission accomplished", 2);
-
         timeLeft -= dt;
+
+        if (timeLeft < 2) {
+            renderer.drawText({256, 256}, "next wave!", 2);
+        } else {
+            renderer.drawText({256, 256}, "mission accomplished", 2);
+        }
+
         if (timeLeft < 0) {
             Context::get().game.nextWave();
             Context::get().game.changeState(Game::State::BUILDING_ROADS);

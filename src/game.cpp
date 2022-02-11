@@ -161,6 +161,8 @@ void Game::changeState(const State state) {
 
 void Game::nextWave() {
     currentWave.units = (waveCount + 1) * 2;
+    currentWave.speed = 100 + (waveCount % 10) * 10 + waveCount;
+    currentWave.hp = 100 + waveCount * 50;
 
     waveCount++;
 }
