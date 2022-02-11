@@ -20,6 +20,12 @@ Audio::~Audio() = default;
 
 void Audio::init() {
     Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096);
+
+    Mix_AllocateChannels(16);
+
+    for (int i = 0; i < 16; i++) {
+        Mix_Volume(i, 100);
+    }
 }
 
 void Audio::loadSound(const String &name) {
@@ -41,6 +47,6 @@ void Audio::playSound(const String &name) {
     auto ret = Mix_PlayChannel(-1, sound.chunk, 0);
 
     if (ret == -1) {
-        Mix_PlayChannel(rand() % 8, sound.chunk, 0);
+        Mix_PlayChannel(rand() % 16, sound.chunk, 0);
     }
 }

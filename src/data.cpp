@@ -43,6 +43,8 @@ void loadData(Renderer &renderer, Audio &audio) {
     audio.loadSound("firing");
     audio.loadSound("impact");
     audio.loadSound("explosion");
+    audio.loadSound("error");
+    audio.loadSound("step");
 
     turretStats[0].range = 300;
     turretStats[0].damage = 50;

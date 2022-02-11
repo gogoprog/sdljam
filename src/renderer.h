@@ -72,7 +72,10 @@ class Renderer {
     void draw(const Vector2 &pos, const Terrain &terrain, const int tileindex);
     void draw(const Vector2 &pos, const std::string &name);
 
-    void drawText(const Vector2 &pos, const std::string &text, const float scale = 1.0f, const bool background = true, const bool use_camera = false);
+    void drawText(const Vector2 &pos, const std::string &text, const float scale = 1.0f, const bool background = true,
+                  const bool use_camera = false);
+
+    void drawCenteredText(const int y, const std::string &text, const float scale = 1.0f, const bool background = true);
 
     void setPivot(const std::string &name, const int frameindex, const Vector2 &pivot);
     int getFramesCount(const std::string &name) const;

@@ -42,6 +42,25 @@ struct Renderer::Pimpl {
 
         return frame_index;
     }
+
+    float getTextWidth(const String &text, const float scale) {
+        auto &atlas = atlases["Font"];
+        float width = 0;
+        for (auto c : text) {
+            int frame_index = getTextFrameIndex(c);
+
+            if (c == ' ') {
+                width += 5 * scale;
+            }
+
+            if (frame_index != -1) {
+                auto &frame = atlas.frames[frame_index];
+                width += 1 * scale + frame.rect.w * 2 * scale;
+            }
+        }
+
+        return width;
+    }
 };
 
 Renderer::Renderer() : pimpl(new Renderer::Pimpl()) {
@@ -423,20 +442,7 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
 
     if (background) {
 
-        for (auto c : text) {
-            int frame_index = pimpl->getTextFrameIndex(c);
-
-            if (c == ' ') {
-                current_pos.x += 5 * scale;
-            }
-
-            if (frame_index != -1) {
-                auto &frame = atlas.frames[frame_index];
-                current_pos.x += 1 * scale + frame.rect.w * 2 * scale;
-            }
-        }
-
-        auto width = current_pos.x - pos.x;
+        auto width = pimpl->getTextWidth(text, scale);
         SDL_Rect rect;
         rect.w = width + 10;
         rect.h = 32 * scale;
@@ -467,6 +473,15 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
             current_pos.x += 1 * scale + frame.rect.w * 2 * scale;
         }
     }
+}
+
+void Renderer::drawCenteredText(const int y, const std::string &text, const float scale, const bool background) {
+    float text_width = pimpl->getTextWidth(text, scale);
+    float center = width / 2;
+    Vector2 pos;
+    pos.x = center - text_width / 2;
+    pos.y = y;
+    drawText(pos, text, scale, background, false);
 }
 
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {

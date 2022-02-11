@@ -34,6 +34,7 @@ class VehicleSystem : public System {
             if (start_coords == level.endCoords) {
                 game.stats.lifes--;
 
+                Context::get().audio.playSound("error");
                 if (game.stats.lifes == 0) {
                     game.changeState(Game::State::LOSING);
                 }

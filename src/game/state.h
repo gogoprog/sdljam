@@ -11,7 +11,7 @@ class FiringStateSystem : public System {
         componentsNames.push_back("RotatableSprite");
     }
 
-    void onAdded() {
+    void onAdded() override {
         time = 0;
     }
 
@@ -30,8 +30,8 @@ class FiringStateSystem : public System {
         }
 
         if (time < 2.0) {
-            renderer.drawText({128, 28}, "step 3:", 1);
-            renderer.drawText({128, 70}, "fight!", 1);
+            renderer.drawCenteredText(80, "step 3:", 2);
+            renderer.drawCenteredText(150, "shoot!!", 2);
         }
     }
 
@@ -87,10 +87,10 @@ class RoadBuildingStateSystem : public System {
             renderer.draw(position, terrain, Tile::FILL2);
         }
 
-        renderer.drawText({128, 28}, "step 1:", 1);
-        renderer.drawText({128, 70}, "connect the roads!", 1);
-        renderer.drawText({128, 110}, "click to build", 1);
-        renderer.drawText({128, 150}, "hold shift to destroy", 1);
+        renderer.drawCenteredText(80, "step 1:", 2);
+        renderer.drawCenteredText(150, "connect the roads!", 2);
+        renderer.drawCenteredText(230, "click to build", 1.5);
+        renderer.drawCenteredText(280, "hold shift to destroy", 1.5);
 
         timeLeft -= dt;
 
@@ -99,10 +99,10 @@ class RoadBuildingStateSystem : public System {
 
         if (correct) {
             String msg;
-            msg = "good! starting in ";
+            msg = "next step in ";
             msg += std::to_string(int(timeLeft));
-            msg += "s";
-            renderer.drawText({128, 256}, msg.c_str(), 1);
+            msg += "s or press space";
+            renderer.drawCenteredText(400, msg.c_str(), 1);
         }
 
         if (timeLeft < 0 || inputs.isKeyJustPressed(SDL_SCANCODE_SPACE)) {
@@ -142,10 +142,10 @@ class BuildingTurretsStateSystem : public System {
             game.changeState(Game::State::PLAYING);
         } else {
             String msg;
-            msg = "next wave in ";
+            msg = "incoming wave in ";
             msg += std::to_string(int(timeLeft));
-            msg += "s";
-            renderer.drawText({128, 256}, msg.c_str(), 1);
+            msg += "s or press space";
+            renderer.drawCenteredText(400, msg.c_str(), 1);
 
             if (level.canBuildAt(tile_coords)) {
 
@@ -209,8 +209,8 @@ class BuildingTurretsStateSystem : public System {
                 }
             }
         }
-        renderer.drawText({128, 28}, "step 2:", 1);
-        renderer.drawText({128, 70}, "build or upgrade the turrets", 1);
+        renderer.drawCenteredText(80, "step 2:", 2);
+        renderer.drawCenteredText(150, "build or upgrade turrets!", 2);
     }
 
   private:

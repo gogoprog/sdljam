@@ -122,6 +122,8 @@ void Game::reset() {
 void Game::changeState(const State state) {
     auto &engine = Context::get().engine;
 
+    Context::get().audio.playSound("step");
+
     switch (state) {
         case State::INITIATING: {
             changeState(State::BUILDING_ROADS);
