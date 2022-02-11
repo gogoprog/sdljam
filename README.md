@@ -2,7 +2,9 @@
 
 Entry for the SDL Enthusiasts 1K members GameJam.
 
-It has only one dependency : SDL.
+It has only one dependency : SDL and SDL_mixer. Yep that makes 2.
+
+![vacuum4](https://user-images.githubusercontent.com/1249453/153670933-0c28dc12-5138-4f9f-90fc-97709348b748.gif)
 
 ## Credits
 
