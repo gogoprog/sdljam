@@ -7,6 +7,7 @@
 #include <span>
 #include <string>
 #include <vector>
+#include <array>
 
 using String = std::string;
 template <typename T> using Vector = std::vector<T>;
