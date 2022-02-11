@@ -2,16 +2,16 @@
 #include <queue>
 
 Level::Level() {
-    tilewidth = 48;
-    tileheight = 64;
+    tilewidth = 32;
+    tileheight = 32;
 
     width = tilewidth * tileSpacing;
     height = tileheight * tileSpacing;
 
     buildCache();
 
-    beginCoords = {20, 64};
-    beginCoords = {20, 20}; // if you read this I want to tell you this line is for debug purpose only
+    beginCoords = {10, 32};
+    /* beginCoords = {20, 20}; // if you read this I want to tell you this line is for debug purpose only */
     endCoords = {20, -1};
 
     setLockedRoad(beginCoords);

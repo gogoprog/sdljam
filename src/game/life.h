@@ -31,7 +31,7 @@ class LifeSystem : public System {
 
             engine->removeEntity(entity);
 
-            game.stats.money += 10 * game.waveCount;
+            game.stats.money += 20 + 20 * game.waveCount;
 
             Context::get().audio.playSound("impact");
 

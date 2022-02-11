@@ -89,6 +89,8 @@ class RoadBuildingStateSystem : public System {
 
         renderer.drawText({128, 28}, "step 1:", 1);
         renderer.drawText({128, 70}, "connect the roads!", 1);
+        renderer.drawText({128, 110}, "click to build", 1);
+        renderer.drawText({128, 150}, "hold shift to destroy", 1);
 
         timeLeft -= dt;
 
@@ -150,7 +152,7 @@ class BuildingTurretsStateSystem : public System {
                 renderer.draw(position, atlas, 0);
 
                 if (inputs.isMouseJustPressed(1)) {
-                    if (game.stats.money >= 400) {
+                    if (game.stats.money >= game.turretCost) {
                         {
                             auto e = Factory::createBase();
                             e->position = position;
@@ -164,9 +166,13 @@ class BuildingTurretsStateSystem : public System {
                         }
 
                         level.lock2x2(tile_coords);
-                        game.stats.money -= 400;
+                        game.stats.money -= game.turretCost;
                     }
                 }
+
+                auto pos = inputs.getMousePosition();
+                pos.y += 32;
+                renderer.drawText(pos, "build (" + std::to_string(game.turretCost) + ")");
             } else {
                 Entity *hover_entity{nullptr};
 
@@ -184,13 +190,14 @@ class BuildingTurretsStateSystem : public System {
                 if (hover_entity != nullptr) {
                     auto pos = inputs.getMousePosition();
                     pos.y += 32;
-                    renderer.drawText(pos, "upgrade");
+
+                    auto &turret = hover_entity->get<Turret>();
+                    auto cost = 400 + turret.level * 200;
+                    renderer.drawText(pos, "upgrade (" + std::to_string(cost) + ")");
 
                     if (inputs.isMouseJustPressed(1)) {
-                        auto &turret = hover_entity->get<Turret>();
 
                         if (turret.level < 9) {
-                            auto cost = 200 + turret.level * 100;
                             if (game.stats.money >= cost) {
 
                                 game.stats.money -= cost;
@@ -217,6 +224,10 @@ class WinningStateSystem : public System {
 
     void onAdded() override {
         timeLeft = 4;
+
+        auto &game = Context::get().game;
+
+        game.stats.money += 100 + game.waveCount * 100;
     }
 
     void update(const float dt) override {
