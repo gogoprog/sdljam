@@ -4,18 +4,27 @@
 #include <cmath>
 #include <map>
 #include <memory>
-#include <numbers>
-#include <span>
+/* #include <span> */
 #include <string>
 #include <vector>
 
 using String = std::string;
 template <typename T> using Vector = std::vector<T>;
-template <typename T> using Span = std::span<T>;
+/* template <typename T> using Span = std::span<T>; */
 template <typename T, int size> using Array = std::array<T, size>;
 template <typename T> using UniquePtr = std::unique_ptr<T>;
 template <typename T> using SharedPtr = std::shared_ptr<T>;
 template <typename K, typename V> using Map = std::map<K, V>;
+
+#if __has_include(<numbers>)
+#include <numbers>
+#else
+namespace std {
+namespace numbers {
+static const double pi = 3.14159265;
+}
+} // namespace std
+#endif
 
 class Vector2 {
   public:

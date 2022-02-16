@@ -40,7 +40,8 @@ SharedPtr<Entity> Factory::createTurret() {
     e->get<Sprite>().atlasName = "Turret";
     e->get<Sprite>().frameIndex = 2;
     e->add<RotatableSprite>();
-    e->get<RotatableSprite>().frames = std::span(turret_frames);
+    /* e->get<RotatableSprite>().frames = std::span(turret_frames); */
+    e->get<RotatableSprite>().frames = Vector<int>{turret_frames.begin(), turret_frames.end()};
 
     return e;
 }
@@ -53,7 +54,8 @@ SharedPtr<Entity> Factory::createBullet() {
     e->get<Sprite>().frameIndex = 0;
     e->get<Sprite>().layer = 2;
     e->add<RotatableSprite>();
-    e->get<RotatableSprite>().frames = std::span(bullet_frames);
+    /* e->get<RotatableSprite>().frames = std::span(bullet_frames); */
+    e->get<RotatableSprite>().frames = Vector<int>{bullet_frames.begin(), bullet_frames.end()};
 
     return e;
 }
@@ -65,7 +67,8 @@ SharedPtr<Entity> Factory::createVehicle() {
     e->get<Sprite>().atlasName = "Tank11";
     e->get<Sprite>().frameIndex = 0;
     e->add<RotatableSprite>();
-    e->get<RotatableSprite>().frames = std::span(tank_frames);
+    /* e->get<RotatableSprite>().frames = std::span(tank_frames); */
+    e->get<RotatableSprite>().frames = Vector<int>{tank_frames.begin(), tank_frames.end()};
     e->add<Movable>();
     e->add<Hittable>();
     e->get<Hittable>().radius = 20;
