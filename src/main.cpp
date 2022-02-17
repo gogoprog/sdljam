@@ -100,7 +100,6 @@ int main(int arc, char **argv) {
 
     game.init();
 
-
 #ifdef EMSCRIPTEN
     emscripten_set_main_loop(loop, 60, true);
 #else
