@@ -6,6 +6,18 @@
 #include <map>
 #include <vector>
 
+namespace {
+SDL_Rect getRect(const Vector2 &position, const Vector2 &size) {
+    SDL_Rect rect;
+    rect.x = int(position.x);
+    rect.y = int(position.y);
+    rect.w = int(size.x);
+    rect.h = int(size.y);
+
+    return rect;
+}
+} // namespace
+
 struct Texture {
     SDL_Rect rect;
     SDL_Texture *texture;
@@ -486,13 +498,13 @@ void Renderer::drawCenteredText(const int y, const std::string &text, const floa
 
 void Renderer::drawFilledQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
     SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
-    SDL_Rect rect = {pos.x, pos.y, size.x, size.y};
+    SDL_Rect rect = getRect(pos, size);
     SDL_RenderFillRect(pimpl->renderer, &rect);
 }
 
 void Renderer::drawQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
     SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
-    SDL_Rect rect = {pos.x, pos.y, size.x, size.y};
+    SDL_Rect rect = getRect(pos, size);
     SDL_RenderDrawRect(pimpl->renderer, &rect);
 }
 
