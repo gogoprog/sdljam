@@ -26,13 +26,13 @@ if(WIN32)
 endif()
 
 if(EMSCRIPTEN)
+    target_compile_definitions(sdljam PUBLIC EMSCRIPTEN)
     set(USE_FLAGS "-s USE_SDL=2 -s USE_SDL_MIXER=2")
-    set(PRELOAD_FLAGS "--preload-file ${CMAKE_CURRENT_LIST_DIR}/res")
+    set(PRELOAD_FLAGS "--preload-file ${CMAKE_CURRENT_LIST_DIR}/res@/res")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS} ${PRELOAD_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
-
 elseif(UNIX)
     INCLUDE(FindPkgConfig)
 

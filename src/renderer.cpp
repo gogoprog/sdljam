@@ -310,6 +310,12 @@ void Renderer::loadFont(const std::string &name) {
     std::string path;
     path = "res/" + name + ".bmp";
     auto surface = SDL_LoadBMP(path.c_str());
+
+    if (surface == nullptr) {
+        std::cout << "File not found?" << std::endl;
+        return;
+    }
+
     Atlas atlas;
 
     atlas.surface = surface;
