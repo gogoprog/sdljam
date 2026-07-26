@@ -1,5 +1,6 @@
 #include "level.h"
 #include <queue>
+#include <algorithm>
 
 Level::Level() {
     tilewidth = 32;
