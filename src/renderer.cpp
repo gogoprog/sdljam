@@ -1,25 +1,26 @@
 #include "renderer.h"
 
 #include "types.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
+#include <cstdio>
 #include <iostream>
 #include <map>
 #include <vector>
 
 namespace {
-SDL_Rect getRect(const Vector2 &position, const Vector2 &size) {
-    SDL_Rect rect;
-    rect.x = int(position.x);
-    rect.y = int(position.y);
-    rect.w = int(size.x);
-    rect.h = int(size.y);
+SDL_FRect getRect(const Vector2 &position, const Vector2 &size) {
+    SDL_FRect rect;
+    rect.x = position.x;
+    rect.y = position.y;
+    rect.w = size.x;
+    rect.h = size.y;
 
     return rect;
 }
 } // namespace
 
 struct Texture {
-    SDL_Rect rect;
+    SDL_FRect rect;
     SDL_Texture *texture;
     Vector2 pivot;
 };
@@ -83,8 +84,8 @@ Renderer::~Renderer() = default;
 void Renderer::init() {
     width = 1280;
     height = 800;
-    SDL_CreateWindowAndRenderer(width, height, SDL_WINDOW_OPENGL, &pimpl->window, &pimpl->renderer);
-    SDL_SetWindowTitle(pimpl->window, "hardvacuum-defense");
+    pimpl->window = SDL_CreateWindow("hardvacuum-defense", width, height, 0);
+    pimpl->renderer = SDL_CreateRenderer(pimpl->window, NULL);
     SDL_SetRenderDrawBlendMode(pimpl->renderer, SDL_BLENDMODE_BLEND);
 }
 
@@ -230,8 +231,9 @@ void Renderer::loadAtlas(const std::string &name, const bool skip_empty, const i
         }
     }
 
-    SDL_SetColorKey(surface, true, 255);
+    SDL_SetSurfaceColorKey(surface, true, 255);
     atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
+    SDL_SetTextureScaleMode(atlas.texture, SDL_SCALEMODE_NEAREST);
 
     pimpl->atlases[name] = atlas;
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
@@ -254,8 +256,9 @@ void Renderer::loadAtlas(const std::string &name, const int frame_width, const i
         x += frame_width;
     }
 
-    SDL_SetColorKey(surface, true, 255);
+    SDL_SetSurfaceColorKey(surface, true, 255);
     atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
+    SDL_SetTextureScaleMode(atlas.texture, SDL_SCALEMODE_NEAREST);
 
     pimpl->atlases[name] = atlas;
     std::cout << "Loaded " << atlas.frames.size() << " frames for atlas '" << name << "'" << std::endl;
@@ -280,8 +283,9 @@ void Renderer::loadTerrain(const std::string &name) {
         }
     }
 
-    SDL_SetColorKey(surface, true, 255);
+    SDL_SetSurfaceColorKey(surface, true, 255);
     terrain.texture = SDL_CreateTextureFromSurface(pimpl->renderer, terrain.surface);
+    SDL_SetTextureScaleMode(terrain.texture, SDL_SCALEMODE_NEAREST);
 
     pimpl->terrains[name] = terrain;
     std::cout << "Loaded " << terrain.tiles.size() << " tiles for terrain '" << name << "'" << std::endl;
@@ -292,8 +296,9 @@ void Renderer::loadTexture(const std::string &name, const bool center_pivot) {
     path = "res/" + name + ".bmp";
     auto surface = SDL_LoadBMP(path.c_str());
     Texture texture;
-    SDL_SetColorKey(surface, true, 255);
+    SDL_SetSurfaceColorKey(surface, true, 255);
     texture.texture = SDL_CreateTextureFromSurface(pimpl->renderer, surface);
+    SDL_SetTextureScaleMode(texture.texture, SDL_SCALEMODE_NEAREST);
     texture.rect = {0, 0, surface->w, surface->h};
 
     if (center_pivot) {
@@ -384,8 +389,9 @@ void Renderer::loadFont(const std::string &name) {
         }
     }
 
-    SDL_SetColorKey(surface, true, 36);
+    SDL_SetSurfaceColorKey(surface, true, 36);
     atlas.texture = SDL_CreateTextureFromSurface(pimpl->renderer, atlas.surface);
+    SDL_SetTextureScaleMode(atlas.texture, SDL_SCALEMODE_NEAREST);
 
     pimpl->atlases[name] = atlas;
     std::cout << "Loaded " << atlas.frames.size() << " frames for font '" << name << "'" << std::endl;
@@ -402,8 +408,8 @@ const Atlas &Renderer::getAtlas(const std::string &name) {
 void Renderer::draw(const Vector2 &pos, const Atlas &atlas, const int frameindex, const bool use_pivot,
                     const float scale, const bool use_camera) {
     auto &frame = atlas.frames[frameindex];
-    auto rect = frame.rect;
-    auto drect = rect;
+    SDL_FRect rect{frame.rect.x, frame.rect.y, frame.rect.w, frame.rect.h};
+    SDL_FRect drect{rect.x, rect.y, rect.w, rect.h};
 
     drect.x = pos.x;
     drect.y = pos.y;
@@ -421,7 +427,7 @@ void Renderer::draw(const Vector2 &pos, const Atlas &atlas, const int frameindex
     drect.w *= 2 * scale;
     drect.h *= 2 * scale;
 
-    SDL_RenderCopy(pimpl->renderer, atlas.texture, &rect, &drect);
+    SDL_RenderTexture(pimpl->renderer, atlas.texture, &rect, &drect);
 }
 
 void Renderer::draw(const Vector2 &pos, const std::string &name, const int frameindex, const bool use_pivot) {
@@ -431,13 +437,13 @@ void Renderer::draw(const Vector2 &pos, const std::string &name, const int frame
 
 void Renderer::draw(const Vector2 &pos, const Terrain &terrain, const int tileindex) {
     auto &frame = terrain.tiles[tileindex];
-    auto rect = frame.rect;
-    auto drect = rect;
+    SDL_FRect rect{frame.rect.x, frame.rect.y, frame.rect.w, frame.rect.h};
+    SDL_FRect drect{rect.x, rect.y, rect.w, rect.h};
     drect.x = pos.x - pimpl->cameraPosition.x;
     drect.y = pos.y - pimpl->cameraPosition.y;
     drect.w *= 2;
     drect.h *= 2;
-    SDL_RenderCopy(pimpl->renderer, terrain.texture, &rect, &drect);
+    SDL_RenderTexture(pimpl->renderer, terrain.texture, &rect, &drect);
 }
 
 void Renderer::draw(const Vector2 &pos, const std::string &name) {
@@ -450,7 +456,7 @@ void Renderer::draw(const Vector2 &pos, const std::string &name) {
     drect.y -= texture.pivot.y;
     drect.w *= 2;
     drect.h *= 2;
-    SDL_RenderCopy(pimpl->renderer, texture.texture, &rect, &drect);
+    SDL_RenderTexture(pimpl->renderer, texture.texture, &rect, &drect);
 }
 
 void Renderer::drawText(const Vector2 &pos, const std::string &text, const float scale, const bool background,
@@ -461,7 +467,7 @@ void Renderer::drawText(const Vector2 &pos, const std::string &text, const float
     if (background) {
 
         auto width = pimpl->getTextWidth(text, scale);
-        SDL_Rect rect;
+        SDL_FRect rect;
         rect.w = width + 10;
         rect.h = 32 * scale;
         rect.x = pos.x - 5;
@@ -504,14 +510,14 @@ void Renderer::drawCenteredText(const int y, const std::string &text, const floa
 
 void Renderer::drawFilledQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
     SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
-    SDL_Rect rect = getRect(pos, size);
+    SDL_FRect rect = getRect(pos, size);
     SDL_RenderFillRect(pimpl->renderer, &rect);
 }
 
 void Renderer::drawQuad(const Vector2 &pos, const Vector2 &size, const int r, const int g, const int b) {
     SDL_SetRenderDrawColor(pimpl->renderer, r, g, b, 255);
-    SDL_Rect rect = getRect(pos, size);
-    SDL_RenderDrawRect(pimpl->renderer, &rect);
+    SDL_FRect rect = getRect(pos, size);
+    SDL_RenderRect(pimpl->renderer, &rect);
 }
 
 void Renderer::setPivot(const std::string &name, const int frameindex, const Vector2 &pivot) {
@@ -543,8 +549,8 @@ const Vector2 &Renderer::getCameraPosition() const {
 }
 
 void Renderer::onWindowEvent(const SDL_WindowEvent &wevent) {
-    switch (wevent.event) {
-        case SDL_WINDOWEVENT_RESIZED:
+    switch (wevent.type) {
+        case SDL_EVENT_WINDOW_RESIZED:
             width = wevent.data1;
             height = wevent.data2;
             break;

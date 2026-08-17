@@ -1,4 +1,4 @@
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <iostream>
 
 #include "context.h"
@@ -31,17 +31,17 @@ void loop() {
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-            case SDL_MOUSEMOTION:
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
+            case SDL_EVENT_MOUSE_MOTION:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
+            case SDL_EVENT_KEY_DOWN:
+            case SDL_EVENT_KEY_UP:
                 inputs.handle(event);
                 break;
-            case SDL_QUIT:
+            case SDL_EVENT_QUIT:
                 quit = true;
                 break;
-            case SDL_WINDOWEVENT:
+            case SDL_EVENT_WINDOW_RESIZED:
                 renderer.onWindowEvent(event.window);
                 break;
         }

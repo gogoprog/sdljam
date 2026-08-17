@@ -1,7 +1,7 @@
 #pragma once
 
 #include "types.h"
-#include <SDL.h>
+#include <SDL3/SDL.h>
 #include <map>
 #include <memory>
 
@@ -18,17 +18,19 @@ class Inputs {
 
     void handle(const SDL_Event &event) {
         switch (event.type) {
-            case SDL_KEYDOWN:
-            case SDL_KEYUP: {
+            case SDL_EVENT_KEY_DOWN:
+            case SDL_EVENT_KEY_UP: {
                 auto &kevent = event.key;
-                currentKeyStates[kevent.keysym.scancode] = kevent.state;
+                bool pressed = (event.type == SDL_EVENT_KEY_DOWN);
+                currentKeyStates[kevent.scancode] = pressed;
             } break;
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP: {
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+            case SDL_EVENT_MOUSE_BUTTON_UP: {
                 auto &mevent = event.button;
-                currentMouseButtonStates[mevent.button] = mevent.state;
+                bool pressed = (event.type == SDL_EVENT_MOUSE_BUTTON_DOWN);
+                currentMouseButtonStates[mevent.button] = pressed;
             } break;
-            case SDL_MOUSEMOTION: {
+            case SDL_EVENT_MOUSE_MOTION: {
                 auto &mevent = event.motion;
                 mousePosition.x = mevent.x;
                 mousePosition.y = mevent.y;
